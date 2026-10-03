@@ -59,6 +59,7 @@ include(":i18n-sy")
 // SY <--
 // KS -->
 include(":i18n-ks")
+include(":komascroll-upscale")
 // KS <--
 include(":macrobenchmark")
 include(":presentation-core")
