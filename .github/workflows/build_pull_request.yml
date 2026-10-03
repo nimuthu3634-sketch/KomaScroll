@@ -2,6 +2,14 @@
 # Runs the same gates a contributor runs locally and uploads the debug APK for testing.
 name: PR build check
 on:
+  # Every push to a work branch is built, so branches get a debug APK even without a PR.
+  push:
+    branches-ignore:
+      - main
+    paths:
+      - '**'
+      - '!**.md'
+  # Pull requests from forks (same-repo branches are already covered by the push trigger).
   pull_request:
     paths:
       - '**'
@@ -19,6 +27,7 @@ permissions:
 jobs:
   build:
     name: Build app
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
     runs-on: 'ubuntu-24.04'
 
     steps:
