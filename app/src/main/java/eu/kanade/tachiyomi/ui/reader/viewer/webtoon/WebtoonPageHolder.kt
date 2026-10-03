@@ -19,6 +19,7 @@ import eu.kanade.tachiyomi.ui.reader.viewer.ReaderPageImageView
 import eu.kanade.tachiyomi.ui.reader.viewer.ReaderProgressIndicator
 import eu.kanade.tachiyomi.ui.webview.WebViewActivity
 import eu.kanade.tachiyomi.util.system.dpToPx
+import komascroll.upscale.reader.UpscaleBadge
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collectLatest
@@ -84,6 +85,10 @@ class WebtoonPageHolder(
      */
     private var loadJob: Job? = null
 
+    // KS -->
+    private val upscaleBadge = UpscaleBadge(frame)
+    // KS <--
+
     init {
         refreshLayoutParams()
 
@@ -97,6 +102,9 @@ class WebtoonPageHolder(
      */
     fun bind(page: ReaderPage) {
         this.page = page
+        // KS -->
+        upscaleBadge.reset()
+        // KS <--
         loadJob?.cancel()
         loadJob = scope.launch { loadPageAndProcessStatus() }
         refreshLayoutParams()
@@ -122,6 +130,9 @@ class WebtoonPageHolder(
         loadJob = null
 
         removeErrorLayout()
+        // KS -->
+        upscaleBadge.reset()
+        // KS <--
         frame.recycle()
         progressIndicator.setProgress(0)
         progressContainer.isVisible = true
@@ -151,7 +162,12 @@ class WebtoonPageHolder(
                             progressIndicator.setProgress(value)
                         }
                     }
-                    Page.State.Ready -> setImage()
+                    // KS -->
+                    Page.State.Ready -> {
+                        setImage()
+                        upscaleBadge.track(page) { setImage() }
+                    }
+                    // KS <--
                     is Page.State.Error -> setError(state.error)
                 }
             }
@@ -191,7 +207,9 @@ class WebtoonPageHolder(
     private suspend fun setImage() {
         progressIndicator.setProgress(0)
 
-        val streamFn = page?.stream ?: return
+        // KS -->
+        val streamFn = page?.let { upscaleBadge.upscaledStream(it) } ?: page?.stream ?: return
+        // KS <--
 
         try {
             val (source, isAnimated) = withIOContext {

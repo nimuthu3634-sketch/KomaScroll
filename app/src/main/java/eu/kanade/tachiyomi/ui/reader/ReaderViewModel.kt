@@ -57,6 +57,7 @@ import exh.source.getMainSource
 import exh.source.isEhBasedManga
 import exh.util.defaultReaderType
 import exh.util.mangaType
+import komascroll.upscale.UpscaleManager
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -138,6 +139,9 @@ class ReaderViewModel @JvmOverloads constructor(
     private val getMergedReferencesById: GetMergedReferencesById = Injekt.get(),
     private val getMergedChaptersByMangaId: GetMergedChaptersByMangaId = Injekt.get(),
     // SY <--
+    // KS -->
+    private val upscaleManager: UpscaleManager = Injekt.get(),
+    // KS <--
 ) : ViewModel() {
 
     private val mutableState = MutableStateFlow(State())
@@ -387,6 +391,9 @@ class ReaderViewModel @JvmOverloads constructor(
     }
 
     override fun onCleared() {
+        // KS -->
+        upscaleManager.onReaderClosed()
+        // KS <--
         val currentChapters = state.value.viewerChapters
         if (currentChapters != null) {
             currentChapters.unref()
@@ -700,6 +707,10 @@ class ReaderViewModel @JvmOverloads constructor(
         if (inDownloadRange) {
             downloadNextChapters()
         }
+
+        // KS -->
+        upscaleManager.onPageSelected(page)
+        // KS <--
 
         eventChannel.trySend(Event.PageChanged)
     }

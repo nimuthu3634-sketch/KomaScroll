@@ -82,6 +82,31 @@ class CreditsScreen : Screen() {
                 }
 
                 item {
+                    Text(
+                        text = stringResource(KSR.strings.credits_third_party),
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(
+                            horizontal = MaterialTheme.padding.medium,
+                            vertical = MaterialTheme.padding.small,
+                        ),
+                    )
+                }
+
+                thirdPartyComponents.forEach { component ->
+                    item(key = component.assetPath) {
+                        TextPreferenceWidget(
+                            title = component.name,
+                            subtitle = stringResource(component.description),
+                            icon = Icons.Outlined.Gavel,
+                            onPreferenceClick = {
+                                navigator.push(AssetLicenseScreen(component.name, component.assetPath))
+                            },
+                        )
+                    }
+                }
+
+                item {
                     TextPreferenceWidget(
                         title = stringResource(MR.strings.licenses),
                         icon = Icons.Outlined.Code,
@@ -107,6 +132,12 @@ class CreditsScreen : Screen() {
         val url: String,
     )
 
+    private data class ThirdPartyComponent(
+        val name: String,
+        val description: StringResource,
+        val assetPath: String,
+    )
+
     // Kept in the companion object so the Voyager screen itself holds no non-serializable state.
     private companion object {
         const val APACHE_LICENSE_URL = "https://www.apache.org/licenses/LICENSE-2.0"
@@ -116,6 +147,18 @@ class CreditsScreen : Screen() {
             UpstreamProject("Mihon", KSR.strings.credits_mihon, "https://github.com/mihonapp/mihon"),
             UpstreamProject("TachiyomiSY", KSR.strings.credits_tachiyomisy, "https://github.com/jobobby04/TachiyomiSY"),
             UpstreamProject("Tachiyomi", KSR.strings.credits_tachiyomi, "https://github.com/tachiyomiorg/tachiyomi"),
+        )
+
+        /** Native components bundled by Lab features; their license texts ship in the APK's assets. */
+        val thirdPartyComponents = listOf(
+            ThirdPartyComponent("NCNN", KSR.strings.credits_ncnn, "licenses/ncnn.txt"),
+            ThirdPartyComponent("glslang", KSR.strings.credits_glslang, "licenses/glslang.txt"),
+            ThirdPartyComponent("Real-ESRGAN", KSR.strings.credits_realesrgan, "licenses/real-esrgan.txt"),
+            ThirdPartyComponent(
+                "Real-ESRGAN-ncnn-vulkan",
+                KSR.strings.credits_realesrgan_ncnn,
+                "licenses/real-esrgan-ncnn-vulkan.txt",
+            ),
         )
     }
 }

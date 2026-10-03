@@ -15,6 +15,7 @@ import eu.kanade.tachiyomi.ui.reader.viewer.ReaderPageImageView
 import eu.kanade.tachiyomi.ui.reader.viewer.ReaderProgressIndicator
 import eu.kanade.tachiyomi.ui.webview.WebViewActivity
 import eu.kanade.tachiyomi.widget.ViewPagerAdapter
+import komascroll.upscale.reader.UpscaleBadge
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -76,6 +77,10 @@ class PagerPageHolder(
      */
     private var extraLoadJob: Job? = null
 
+    // KS -->
+    private val upscaleBadge = UpscaleBadge(this)
+    // KS <--
+
     init {
         loadJob = scope.launch { loadPageAndProcessStatus(1) }
         // SY -->
@@ -133,7 +138,15 @@ class PagerPageHolder(
                             progressIndicator?.setProgress(value)
                         }
                     }
-                    Page.State.Ready -> setImage()
+                    // KS -->
+                    Page.State.Ready -> {
+                        setImage()
+                        // Upscaling is only shown for single pages, not merged double pages.
+                        if (pageIndex == 1 && extraPage == null) {
+                            upscaleBadge.track(page) { setImage() }
+                        }
+                    }
+                    // KS <--
                     is Page.State.Error -> setError(state.error)
                 }
             }
@@ -177,7 +190,10 @@ class PagerPageHolder(
             progressIndicator?.setProgress(95)
         }
 
-        val streamFn = page.stream ?: return
+        // KS -->
+        val upscaledStream = if (extraPage == null) upscaleBadge.upscaledStream(page) else null
+        val streamFn = upscaledStream ?: page.stream ?: return
+        // KS <--
         val streamFn2 = extraPage?.stream
 
         try {

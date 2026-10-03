@@ -148,7 +148,7 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
         Injekt.importModule(SYDomainModule())
         // SY <--
         // KS -->
-        Injekt.importModule(KomaScrollModule())
+        Injekt.importModule(KomaScrollModule(this))
         // KS <--
 
         setupExhLogging() // EXH logging
