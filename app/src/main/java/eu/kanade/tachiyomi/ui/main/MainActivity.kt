@@ -105,6 +105,7 @@ import exh.debug.DebugToggles
 import exh.eh.EHentaiUpdateWorker
 import exh.log.DebugModeOverlay
 import exh.source.ExhPreferences
+import komascroll.core.KomaScrollBranding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
@@ -414,8 +415,13 @@ class MainActivity : BaseActivity() {
             var showChangelog by remember {
                 mutableStateOf(
                     // KMK -->
-                    (isReleaseBuildType && didMigration) ||
-                        (isPreviewBuildType && previewCurrentVersion > previewLastVersion.get()),
+                    // KS -->
+                    KomaScrollBranding.SHOW_UPSTREAM_LINKS &&
+                        // KS <--
+                        (
+                            (isReleaseBuildType && didMigration) ||
+                                (isPreviewBuildType && previewCurrentVersion > previewLastVersion.get())
+                            ),
                     // KMK <--
                 )
             }

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- KomaScroll Lab -->
+    <string name="pref_category_lab">KomaScroll Lab</string>
+    <string name="pref_lab_summary">Experimental reader features</string>
+    <string name="lab_empty">No experimental features yet. New KomaScroll features will appear here, each with its own on/off switch.</string>
+
+    <!-- Credits -->
+    <string name="credits">Credits</string>
+    <string name="credits_summary">The open-source projects KomaScroll is built on</string>
+    <string name="credits_intro">KomaScroll is a fork of Komikku. It would not exist without the work of the projects below and all of their contributors.</string>
+    <string name="credits_komikku">The app KomaScroll is forked from</string>
+    <string name="credits_mihon">The manga reader Komikku is based on</string>
+    <string name="credits_tachiyomisy">Feature fork whose additions are included in Komikku</string>
+    <string name="credits_tachiyomi">The original open-source manga reader</string>
+    <string name="credits_license_title">License</string>
+    <string name="credits_license_body">KomaScroll, Komikku, Mihon, TachiyomiSY and Tachiyomi are distributed under the Apache License, Version 2.0. All original copyright notices are kept in the source code. KomaScroll is an independent project and is not affiliated with or endorsed by any of them.</string>
+    <string name="credits_source_code">KomaScroll source code</string>
+</resources>

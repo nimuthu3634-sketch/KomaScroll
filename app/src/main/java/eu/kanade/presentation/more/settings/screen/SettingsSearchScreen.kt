@@ -50,6 +50,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import eu.kanade.presentation.components.UpIcon
 import eu.kanade.presentation.more.settings.Preference
 import eu.kanade.presentation.util.Screen
+import komascroll.presentation.lab.SettingsLabScreen
 import tachiyomi.i18n.MR
 import tachiyomi.presentation.core.components.material.Scaffold
 import tachiyomi.presentation.core.i18n.stringResource
@@ -301,6 +302,9 @@ private val settingScreens = listOf(
     SettingsEhScreen,
     SettingsMangadexScreen,
     // SY <--
+    // KS -->
+    SettingsLabScreen,
+    // KS <--
     SettingsAdvancedScreen,
 )
 

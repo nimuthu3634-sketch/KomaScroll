@@ -12,7 +12,9 @@ class BaselineProfileGenerator {
 
     @Test
     fun generate() = baselineProfileRule.collect(
-        packageName = "app.komikku.benchmark",
+        // KS -->
+        packageName = "com.chama.komascroll.benchmark",
+        // KS <--
         profileBlock = {
             pressHome()
             startActivityAndWait()

@@ -40,7 +40,9 @@ dependencyResolutionManagement {
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
-rootProject.name = "Komikku"
+// KS -->
+rootProject.name = "KomaScroll"
+// KS <--
 include(":app")
 include(":core-metadata")
 include(":core:archive")
@@ -55,6 +57,9 @@ include(":flagkit")
 // SY -->
 include(":i18n-sy")
 // SY <--
+// KS -->
+include(":i18n-ks")
+// KS <--
 include(":macrobenchmark")
 include(":presentation-core")
 include(":presentation-widget")

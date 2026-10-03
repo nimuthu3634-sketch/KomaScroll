@@ -1,0 +1,23 @@
+KomaScroll
+Copyright 2026 The KomaScroll contributors
+
+This product is a modified version of Komikku (https://github.com/komikku-app/komikku),
+licensed under the Apache License, Version 2.0.
+
+Komikku is itself derived from:
+  - Mihon (https://github.com/mihonapp/mihon)
+    Copyright 2015-2024 Javier Tomás, Copyright 2024 Mihon Open Source Project
+  - TachiyomiSY (https://github.com/jobobby04/TachiyomiSY)
+  - Tachiyomi (https://github.com/tachiyomiorg/tachiyomi)
+all licensed under the Apache License, Version 2.0.
+
+All original copyright notices in the source files are retained.
+Modifications made by KomaScroll to upstream files are marked with
+"// KS -->" ... "// KS <--" comments (or "<!-- KS -> -->" ... "<!-- KS <- -->" in XML).
+New KomaScroll code lives in the "komascroll" packages and the "i18n-ks" module.
+
+"Komikku", "Mihon" and "Tachiyomi" are names of their respective projects.
+KomaScroll is not affiliated with or endorsed by them.
+
+Third-party libraries and their licenses are listed in the app under
+Settings > About > Open source licenses.

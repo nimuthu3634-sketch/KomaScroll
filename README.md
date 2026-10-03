@@ -1,3 +1,19 @@
+# KomaScroll
+
+KomaScroll is an Android manga reader built on top of [Komikku](https://github.com/komikku-app/komikku),
+which is itself based on [Mihon](https://github.com/mihonapp/mihon) and [TachiyomiSY](https://github.com/jobobby04/TachiyomiSY).
+It adds experimental features under **Settings → KomaScroll Lab**.
+
+KomaScroll is source-agnostic: it ships with no content sources or extension repositories.
+
+Licensed under the Apache License 2.0 — see [LICENSE](LICENSE) and [NOTICE](NOTICE).
+KomaScroll is not affiliated with the Komikku, Mihon or Tachiyomi projects.
+
+> The rest of this file is Komikku's original README, kept for reference. Its download links and
+> community channels belong to Komikku, not KomaScroll.
+
+---
+
 <div align="center">
 
 <a href="https://komikku-app.github.io">

@@ -26,7 +26,9 @@ android {
     namespace = "eu.kanade.tachiyomi"
 
     defaultConfig {
-        applicationId = "app.komikku"
+        // KS -->
+        applicationId = "com.chama.komascroll"
+        // KS <--
 
         versionCode = 81
         versionName = "1.14.1"
@@ -191,6 +193,9 @@ dependencies {
     // SY -->
     implementation(projects.i18nSy)
     // SY <--
+    // KS -->
+    implementation(projects.i18nKs)
+    // KS <--
     implementation(projects.core.archive)
     implementation(projects.core.common)
     implementation(projects.coreMetadata)

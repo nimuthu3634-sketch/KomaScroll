@@ -1,3 +1,18 @@
+# KomaScroll fork rules (read first)
+
+This repository is **KomaScroll** (`com.chama.komascroll`, debug: `com.chama.komascroll.dev`), a fork of Komikku.
+The Komikku guide below still applies, with these overrides:
+
+- **Markers:** wrap every KomaScroll change to existing files in `// KS -->` … `// KS <--` (XML: `<!-- KS -> -->` … `<!-- KS <- -->`). Never add new `// KMK`, `// SY` or `// EXH` blocks.
+- **New code:** put it under the `komascroll.*` package in `app/src/main/java/komascroll/` (DI in `komascroll.di.KomaScrollModule`, Lab toggles in `komascroll.lab.LabPreferences`).
+- **Strings:** all new strings go to `i18n-ks/src/commonMain/moko-resources/base/strings.xml`, referenced via `komascroll.i18n.KSR`.
+- **Lab:** every new feature gets an on/off toggle in `SettingsLabScreen`; heavy features default to off.
+- **Source-agnostic:** never bundle, hardcode or recommend content sources or extension repos.
+- **Secrets:** no API keys in source; user-supplied keys go in encrypted storage.
+- **Upstream:** `git remote upstream` = komikku-app/komikku; merge it, don't rebase.
+
+---
+
 # Komikku – AI Agent Guide
 
 Komikku is an Android manga reader (min SDK 26, target SDK 36, JVM target 17 / Kotlin) forked from **Mihon** + **TachiyomiSY**. `applicationId`: `app.komikku` (debug: `app.komikku.dev`).

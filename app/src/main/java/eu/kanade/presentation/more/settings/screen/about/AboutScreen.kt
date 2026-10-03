@@ -41,6 +41,9 @@ import eu.kanade.tachiyomi.util.system.isPreviewBuildType
 import eu.kanade.tachiyomi.util.system.isReleaseBuildType
 import eu.kanade.tachiyomi.util.system.toast
 import eu.kanade.tachiyomi.util.system.updaterEnabled
+import komascroll.core.KomaScrollBranding
+import komascroll.i18n.KSR
+import komascroll.presentation.credits.CreditsScreen
 import kotlinx.coroutines.launch
 import logcat.LogPriority
 import tachiyomi.core.common.util.lang.withIOContext
@@ -147,44 +150,52 @@ class AboutScreen : Screen() {
                 }
 
                 // KMK -->
-                item {
-                    TextPreferenceWidget(
-                        title = stringResource(MR.strings.whats_new),
-                        widget = {
-                            AnimatedVisibility(visible = isCheckingWhatsNew) {
-                                CircularProgressIndicator(
-                                    modifier = Modifier.size(28.dp),
-                                    strokeWidth = 3.dp,
-                                )
-                            }
-                        },
-                        onPreferenceClick = {
-                            if (!isCheckingWhatsNew) {
-                                scope.launch {
-                                    isCheckingWhatsNew = true
-
-                                    getReleaseNotes(
-                                        context = context,
-                                        onAvailableUpdate = { result ->
-                                            val whatsNewScreen = WhatsNewScreen(
-                                                currentVersion = BuildConfig.VERSION_NAME,
-                                                versionName = result.release.version,
-                                                changelogInfo = result.release.info,
-                                                releaseLink = result.release.releaseLink,
-                                            )
-                                            navigator.push(whatsNewScreen)
-                                        },
-                                        onFinish = {
-                                            isCheckingWhatsNew = false
-                                        },
+                // KS -->
+                if (KomaScrollBranding.SHOW_UPSTREAM_LINKS) {
+                    // KS <--
+                    item {
+                        TextPreferenceWidget(
+                            title = stringResource(MR.strings.whats_new),
+                            widget = {
+                                AnimatedVisibility(visible = isCheckingWhatsNew) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(28.dp),
+                                        strokeWidth = 3.dp,
                                     )
                                 }
-                            }
-                        },
-                    )
-                }
+                            },
+                            onPreferenceClick = {
+                                if (!isCheckingWhatsNew) {
+                                    scope.launch {
+                                        isCheckingWhatsNew = true
 
-                if (isReleaseBuildType || isDebugBuildType) {
+                                        getReleaseNotes(
+                                            context = context,
+                                            onAvailableUpdate = { result ->
+                                                val whatsNewScreen = WhatsNewScreen(
+                                                    currentVersion = BuildConfig.VERSION_NAME,
+                                                    versionName = result.release.version,
+                                                    changelogInfo = result.release.info,
+                                                    releaseLink = result.release.releaseLink,
+                                                )
+                                                navigator.push(whatsNewScreen)
+                                            },
+                                            onFinish = {
+                                                isCheckingWhatsNew = false
+                                            },
+                                        )
+                                    }
+                                }
+                            },
+                        )
+                    }
+                    // KS -->
+                }
+                // KS <--
+
+                // KS -->
+                if (KomaScrollBranding.SHOW_UPSTREAM_LINKS && (isReleaseBuildType || isDebugBuildType)) {
+                    // KS <--
                     item {
                         TextPreferenceWidget(
                             title = stringResource(KMR.strings.whats_coming),
@@ -225,16 +236,30 @@ class AboutScreen : Screen() {
                 }
                 // KMK <--
 
+                // KS -->
+                if (KomaScrollBranding.SHOW_UPSTREAM_LINKS) {
+                    // KS <--
+                    item {
+                        TextPreferenceWidget(
+                            title = stringResource(MR.strings.help_translate),
+                            onPreferenceClick = {
+                                uriHandler.openUri(
+                                    "https://hosted.weblate.org/engage/komikku-app/",
+                                )
+                            },
+                        )
+                    }
+                    // KS -->
+                }
+
                 item {
                     TextPreferenceWidget(
-                        title = stringResource(MR.strings.help_translate),
-                        onPreferenceClick = {
-                            uriHandler.openUri(
-                                "https://hosted.weblate.org/engage/komikku-app/",
-                            )
-                        },
+                        title = stringResource(KSR.strings.credits),
+                        subtitle = stringResource(KSR.strings.credits_summary),
+                        onPreferenceClick = { navigator.push(CreditsScreen()) },
                     )
                 }
+                // KS <--
 
                 item {
                     TextPreferenceWidget(
@@ -243,12 +268,18 @@ class AboutScreen : Screen() {
                     )
                 }
 
-                item {
-                    TextPreferenceWidget(
-                        title = stringResource(MR.strings.privacy_policy),
-                        onPreferenceClick = { uriHandler.openUri("https://komikku-app.github.io/privacy/") },
-                    )
+                // KS -->
+                if (KomaScrollBranding.SHOW_UPSTREAM_LINKS) {
+                    // KS <--
+                    item {
+                        TextPreferenceWidget(
+                            title = stringResource(MR.strings.privacy_policy),
+                            onPreferenceClick = { uriHandler.openUri("https://komikku-app.github.io/privacy/") },
+                        )
+                    }
+                    // KS -->
                 }
+                // KS <--
 
                 item {
                     Row(
@@ -257,16 +288,22 @@ class AboutScreen : Screen() {
                             .padding(vertical = 8.dp),
                         horizontalArrangement = Arrangement.Center,
                     ) {
-                        LinkIcon(
-                            label = stringResource(MR.strings.website),
-                            icon = Icons.Outlined.Public,
-                            url = "https://komikku-app.github.io",
-                        )
-                        LinkIcon(
-                            label = "Discord",
-                            icon = CustomIcons.Discord,
-                            url = "https://discord.gg/85jB7V5AJR",
-                        )
+                        // KS -->
+                        if (KomaScrollBranding.SHOW_UPSTREAM_LINKS) {
+                            // KS <--
+                            LinkIcon(
+                                label = stringResource(MR.strings.website),
+                                icon = Icons.Outlined.Public,
+                                url = "https://komikku-app.github.io",
+                            )
+                            LinkIcon(
+                                label = "Discord",
+                                icon = CustomIcons.Discord,
+                                url = "https://discord.gg/85jB7V5AJR",
+                            )
+                            // KS -->
+                        }
+                        // KS <--
                         // LinkIcon(
                         //     label = "X",
                         //     icon = CustomIcons.X,
@@ -285,7 +322,9 @@ class AboutScreen : Screen() {
                         LinkIcon(
                             label = "GitHub",
                             icon = CustomIcons.Github,
-                            url = "https://github.com/komikku-app",
+                            // KS -->
+                            url = KomaScrollBranding.GITHUB_URL,
+                            // KS <--
                         )
                     }
                 }

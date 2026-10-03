@@ -5,6 +5,7 @@ import com.materialkolor.PaletteStyle
 import eu.kanade.domain.ui.model.AppTheme
 import eu.kanade.domain.ui.model.TabletUiMode
 import eu.kanade.domain.ui.model.ThemeMode
+import komascroll.core.KomaScrollBranding
 import tachiyomi.core.common.preference.PreferenceStore
 import tachiyomi.core.common.preference.getEnum
 import java.time.format.DateTimeFormatter
@@ -19,13 +20,17 @@ class UiPreferences(
 
     fun appTheme() = preferenceStore.getEnum(
         "pref_app_theme",
-        AppTheme.MONET,
+        // KS -->
+        AppTheme.CUSTOM,
+        // KS <--
     )
 
     fun themeDarkAmoled() = preferenceStore.getBoolean("pref_theme_dark_amoled_key", false)
 
     // KMK -->
-    fun colorTheme() = preferenceStore.getInt("pref_color_theme", 0xFFDF0090.toInt())
+    // KS -->
+    fun colorTheme() = preferenceStore.getInt("pref_color_theme", KomaScrollBranding.SEED_COLOR)
+    // KS <--
 
     fun customThemeStyle() = preferenceStore.getEnum("pref_custom_theme_style_key", PaletteStyle.Fidelity)
 
