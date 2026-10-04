@@ -110,6 +110,7 @@ import exh.ui.metadata.adapters.LanraragiDescription
 import exh.ui.metadata.adapters.MangaDexDescription
 import exh.ui.metadata.adapters.NHentaiDescription
 import exh.ui.metadata.adapters.PururinDescription
+import komascroll.library.LibraryInsightsRow
 import tachiyomi.domain.chapter.model.Chapter
 import tachiyomi.domain.chapter.service.missingChaptersCount
 import tachiyomi.domain.library.service.LibraryPreferences
@@ -787,6 +788,15 @@ private fun MangaScreenSmallImpl(
                         )
                     }
 
+                    // KS -->
+                    item(key = KS_INSIGHTS_KEY, contentType = KS_INSIGHTS_KEY) {
+                        LibraryInsightsRow(
+                            manga = state.manga,
+                            chapters = remember(state.chapters) { state.chapters.map { it.chapter } },
+                        )
+                    }
+                    // KS <--
+
                     sharedChapterItems(
                         manga = state.manga,
                         mergedData = state.mergedData,
@@ -1226,6 +1236,15 @@ private fun MangaScreenLargeImpl(
                                 )
                             }
 
+                            // KS -->
+                            item(key = KS_INSIGHTS_KEY, contentType = KS_INSIGHTS_KEY) {
+                                LibraryInsightsRow(
+                                    manga = state.manga,
+                                    chapters = remember(state.chapters) { state.chapters.map { it.chapter } },
+                                )
+                            }
+                            // KS <--
+
                             sharedChapterItems(
                                 manga = state.manga,
                                 mergedData = state.mergedData,
@@ -1445,3 +1464,7 @@ fun metadataDescription(source: Source): MetadataDescriptionComposable? {
     }
 }
 // SY <--
+
+// KS -->
+private const val KS_INSIGHTS_KEY = "komascroll-library-insights"
+// KS <--

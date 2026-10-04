@@ -3,6 +3,10 @@ package komascroll.di
 import android.app.Application
 import komascroll.core.SecretStore
 import komascroll.lab.LabPreferences
+import komascroll.library.KomaScrollDatabase
+import komascroll.library.LibraryInsightsRecorder
+import komascroll.library.failover.SourceFailover
+import komascroll.library.wrapped.ReadingWrapped
 import komascroll.panels.PanelManager
 import komascroll.translate.TranslationManager
 import komascroll.upscale.UpscaleCache
@@ -32,5 +36,11 @@ class KomaScrollModule(private val app: Application) : InjektModule {
 
         // Guided panel view: classical panel detection, cached per page.
         addSingletonFactory { PanelManager(app, get()) }
+
+        // Library intelligence: KomaScroll's own database, recorder, source failover, Wrapped.
+        addSingletonFactory { KomaScrollDatabase(app) }
+        addSingletonFactory { LibraryInsightsRecorder(get(), get()) }
+        addSingletonFactory { SourceFailover(get(), get(), get(), get(), get(), get()) }
+        addSingletonFactory { ReadingWrapped(get(), get(), get(), get()) }
     }
 }

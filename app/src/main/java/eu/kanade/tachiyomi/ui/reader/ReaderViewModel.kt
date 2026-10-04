@@ -57,6 +57,7 @@ import exh.source.getMainSource
 import exh.source.isEhBasedManga
 import exh.util.defaultReaderType
 import exh.util.mangaType
+import komascroll.library.LibraryInsightsRecorder
 import komascroll.translate.TranslationManager
 import komascroll.upscale.UpscaleManager
 import kotlinx.coroutines.CancellationException
@@ -143,6 +144,7 @@ class ReaderViewModel @JvmOverloads constructor(
     // KS -->
     private val upscaleManager: UpscaleManager = Injekt.get(),
     private val translationManager: TranslationManager = Injekt.get(),
+    private val insightsRecorder: LibraryInsightsRecorder = Injekt.get(),
     // KS <--
 ) : ViewModel() {
 
@@ -169,6 +171,11 @@ class ReaderViewModel @JvmOverloads constructor(
             savedState["chapter_id"] = value
             field = value
         }
+
+    // KS -->
+    /** The chapter the reader was opened with, used to offer source failover when it fails. */
+    val initialChapterId: Long? get() = chapterId.takeIf { it > 0 }
+    // KS <--
 
     /**
      * The visible page index of the currently loaded chapter. Used to restore from process kill.
@@ -396,6 +403,7 @@ class ReaderViewModel @JvmOverloads constructor(
         // KS -->
         upscaleManager.onReaderClosed()
         translationManager.onReaderClosed()
+        insightsRecorder.onReaderClosed()
         // KS <--
         val currentChapters = state.value.viewerChapters
         if (currentChapters != null) {
@@ -714,6 +722,7 @@ class ReaderViewModel @JvmOverloads constructor(
         // KS -->
         upscaleManager.onPageSelected(page)
         translationManager.onPageSelected(page)
+        insightsRecorder.onPageSelected(page)
         // KS <--
 
         eventChannel.trySend(Event.PageChanged)

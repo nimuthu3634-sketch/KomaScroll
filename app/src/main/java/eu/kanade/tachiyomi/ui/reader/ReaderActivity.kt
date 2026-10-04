@@ -113,6 +113,7 @@ import eu.kanade.tachiyomi.util.view.setComposeContent
 import exh.source.isEhBasedSource
 import exh.util.defaultReaderType
 import exh.util.mangaType
+import komascroll.library.failover.ReaderFailoverPrompt
 import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableSet
@@ -1094,6 +1095,9 @@ class ReaderActivity : BaseActivity() {
      */
     private fun setInitialChapterError(error: Throwable) {
         logcat(LogPriority.ERROR, error)
+        // KS -->
+        if (ReaderFailoverPrompt.show(this, viewModel.manga?.id, viewModel.initialChapterId, error)) return
+        // KS <--
         finish()
         toast(error.message)
     }

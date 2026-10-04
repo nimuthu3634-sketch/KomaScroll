@@ -106,6 +106,7 @@ import exh.eh.EHentaiUpdateWorker
 import exh.log.DebugModeOverlay
 import exh.source.ExhPreferences
 import komascroll.core.KomaScrollBranding
+import komascroll.library.failover.SourceFailoverScreen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
@@ -684,6 +685,16 @@ class MainActivity : BaseActivity() {
                 }
                 null
             }
+            // KS -->
+            SourceFailoverScreen.ACTION -> {
+                val mangaId = intent.getLongExtra(SourceFailoverScreen.EXTRA_MANGA_ID, -1L)
+                if (mangaId > 0) {
+                    val chapterId = intent.getLongExtra(SourceFailoverScreen.EXTRA_CHAPTER_ID, -1L).takeIf { it > 0 }
+                    navigator.push(SourceFailoverScreen(mangaId, chapterId))
+                }
+                null
+            }
+            // KS <--
             INTENT_SEARCH -> {
                 val query = intent.getStringExtra(INTENT_SEARCH_QUERY)
                 if (!query.isNullOrEmpty()) {
