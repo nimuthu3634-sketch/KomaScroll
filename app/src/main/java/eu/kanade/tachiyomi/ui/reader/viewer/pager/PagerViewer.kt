@@ -21,6 +21,7 @@ import eu.kanade.tachiyomi.ui.reader.model.ReaderPage
 import eu.kanade.tachiyomi.ui.reader.model.ViewerChapters
 import eu.kanade.tachiyomi.ui.reader.viewer.Viewer
 import eu.kanade.tachiyomi.ui.reader.viewer.ViewerNavigation.NavigationRegion
+import komascroll.translate.reader.TranslationLongPress
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import tachiyomi.core.common.util.system.logcat
@@ -135,6 +136,17 @@ abstract class PagerViewer(
             }
         }
         pager.longTapListener = f@{
+            // KS -->
+            val currentPage = adapter.joinedItems.getOrNull(pager.currentItem)?.first as? ReaderPage
+            val holder = pager.children.filterIsInstance<PagerPageHolder>().firstOrNull { holder ->
+                holder.item.first === currentPage
+            }
+            if (currentPage != null && holder != null) {
+                val x = it.x + pager.scrollX - holder.left
+                val y = it.y + pager.scrollY - holder.top
+                if (TranslationLongPress.handle(activity, currentPage, holder, x, y)) return@f true
+            }
+            // KS <--
             if (activity.viewModel.state.value.menuVisible || config.longTapEnabled) {
                 val item = adapter.joinedItems.getOrNull(pager.currentItem)
                 val firstPage = item?.first as? ReaderPage

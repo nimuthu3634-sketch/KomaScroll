@@ -27,7 +27,14 @@ Bundled native components (KomaScroll Lab, AI upscaling):
     Copyright (c) 2021 Xintao Wang, BSD 3-Clause License.
   - Tiling approach adapted from Real-ESRGAN-ncnn-vulkan
     (https://github.com/xinntao/Real-ESRGAN-ncnn-vulkan), Copyright (c) 2021 Xintao Wang, MIT License.
-Their full license texts are in komascroll-upscale/src/main/assets/licenses/ and are shown in the app
+Bundled font (KomaScroll Lab, live translation):
+  - Comic Neue (https://github.com/crozynski/comicneue), Copyright 2014 The Comic Neue Project Authors,
+    SIL Open Font License 1.1.
+Live translation uses Google ML Kit (text recognition v2 through Google Play services, on-device
+translation), which is distributed under the ML Kit terms of service and is not bundled as source.
+
+License texts are in komascroll-upscale/src/main/assets/licenses/ and
+komascroll-translate/src/main/assets/licenses/, and are shown in the app
 under Settings > About > Credits.
 
 Other third-party libraries and their licenses are listed in the app under

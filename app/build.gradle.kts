@@ -196,6 +196,7 @@ dependencies {
     // KS -->
     implementation(projects.i18nKs)
     implementation(projects.komascrollUpscale)
+    implementation(projects.komascrollTranslate)
     // KS <--
     implementation(projects.core.archive)
     implementation(projects.core.common)

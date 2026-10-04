@@ -34,6 +34,29 @@ class LabPreferences(
     /** Disk cache limit for upscaled pages, in MB. */
     fun upscaleCacheSizeMb() = preferenceStore.getInt(key("upscale_cache_size_mb"), 500)
 
+    // Live raw translation (Phase 2)
+
+    /** Master switch for the feature. Heavy (OCR + translation models), so off by default. */
+    fun translateEnabled() = preferenceStore.getBoolean(key("translate_enabled"), false)
+
+    /** Reader-side toggle, shown in the reader settings sheet once the feature is enabled. */
+    fun translateInReader() = preferenceStore.getBoolean(key("translate_in_reader"), true)
+
+    /** Language of the raw pages, as a BCP-47 tag (selects the OCR script). */
+    fun translateSourceLanguage() = preferenceStore.getString(key("translate_source_language"), "ja")
+
+    /** Language to translate into, as a BCP-47 tag. */
+    fun translateTargetLanguage() = preferenceStore.getString(key("translate_target_language"), "en")
+
+    /** Translation engine id: "mlkit" (on-device, default) or "deepl" (online, needs a user API key). */
+    fun translateEngine() = preferenceStore.getString(key("translate_engine"), "mlkit")
+
+    /** Only download OCR/translation models over Wi-Fi. */
+    fun translateModelsOnWifiOnly() = preferenceStore.getBoolean(key("translate_models_wifi_only"), true)
+
+    /** Disk cache limit for translated pages, in MB. */
+    fun translateCacheSizeMb() = preferenceStore.getInt(key("translate_cache_size_mb"), 200)
+
     private fun key(name: String) = KEY_PREFIX + name
 
     private companion object {

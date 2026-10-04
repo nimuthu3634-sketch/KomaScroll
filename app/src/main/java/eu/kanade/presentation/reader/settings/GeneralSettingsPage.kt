@@ -9,7 +9,7 @@ import androidx.compose.runtime.getValue
 import eu.kanade.tachiyomi.ui.reader.setting.ReaderPreferences
 import eu.kanade.tachiyomi.ui.reader.setting.ReaderSettingsScreenModel
 import eu.kanade.tachiyomi.util.system.hasDisplayCutout
-import komascroll.upscale.reader.ReaderUpscaleSettings
+import komascroll.reader.ReaderLabSettings
 import tachiyomi.i18n.MR
 import tachiyomi.i18n.sy.SYMR
 import tachiyomi.presentation.core.components.CheckboxItem
@@ -159,6 +159,6 @@ internal fun GeneralPage(screenModel: ReaderSettingsScreenModel) {
     // SY <--
 
     // KS -->
-    ReaderUpscaleSettings()
+    ReaderLabSettings()
     // KS <--
 }

@@ -1,7 +1,9 @@
 package komascroll.di
 
 import android.app.Application
+import komascroll.core.SecretStore
 import komascroll.lab.LabPreferences
+import komascroll.translate.TranslationManager
 import komascroll.upscale.UpscaleCache
 import komascroll.upscale.UpscaleManager
 import komascroll.upscale.engine.UpscaleEngine
@@ -22,5 +24,9 @@ class KomaScrollModule(private val app: Application) : InjektModule {
         addSingletonFactory { UpscaleEngine(app) }
         addSingletonFactory { UpscaleCache(app, get()) }
         addSingletonFactory { UpscaleManager(app, get(), get(), get()) }
+
+        // Live translation: OCR and translation models are only touched once the feature is used.
+        addSingletonFactory { SecretStore(app) }
+        addSingletonFactory { TranslationManager(app, get(), get(), get(), get(), get()) }
     }
 }
