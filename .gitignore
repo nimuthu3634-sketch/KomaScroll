@@ -21,3 +21,9 @@ local.properties
 /app/google-services.json
 *.jks
 app/standard/preview/*
+
+# KS -->
+# Release signing secrets (see README → Signing a release). Never commit these.
+keystore.properties
+*.keystore
+# KS <--

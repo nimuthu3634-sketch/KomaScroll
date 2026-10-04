@@ -2,6 +2,7 @@ import mihon.buildlogic.Config
 import mihon.buildlogic.getBuildTime
 import mihon.buildlogic.getCommitCount
 import mihon.buildlogic.getGitSha
+import java.util.Properties
 
 plugins {
     id("mihon.android.application")
@@ -21,6 +22,20 @@ if (Config.includeTelemetry) {
 }
 
 shortcutHelper.setFilePath("./shortcuts.xml")
+
+// KS -->
+// Release signing. The keystore and its passwords never live in the repository: they come from a
+// git-ignored keystore.properties file in the project root, or from environment variables (CI).
+// Without them, release APKs are built unsigned, as upstream does.
+val keystoreProperties = Properties().apply {
+    rootProject.file("keystore.properties").takeIf { it.isFile }?.inputStream()?.use(::load)
+}
+
+fun releaseSigningValue(key: String, env: String): String? =
+    (keystoreProperties.getProperty(key) ?: System.getenv(env))?.takeIf { it.isNotBlank() }
+
+val releaseStoreFile = releaseSigningValue("storeFile", "KOMASCROLL_KEYSTORE_FILE")
+// KS <--
 
 android {
     namespace = "eu.kanade.tachiyomi"
@@ -42,6 +57,19 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    // KS -->
+    signingConfigs {
+        if (releaseStoreFile != null) {
+            create("release") {
+                storeFile = file(releaseStoreFile)
+                storePassword = releaseSigningValue("storePassword", "KOMASCROLL_KEYSTORE_PASSWORD")
+                keyAlias = releaseSigningValue("keyAlias", "KOMASCROLL_KEY_ALIAS")
+                keyPassword = releaseSigningValue("keyPassword", "KOMASCROLL_KEY_PASSWORD")
+            }
+        }
+    }
+    // KS <--
+
     buildTypes {
         val debug by getting {
             applicationIdSuffix = ".dev"
@@ -53,6 +81,10 @@ android {
             isShrinkResources = Config.enableCodeShrink
 
             proguardFiles("proguard-android-optimize.txt", "proguard-rules.pro")
+
+            // KS -->
+            signingConfig = signingConfigs.findByName("release")
+            // KS <--
 
             buildConfigField("String", "BUILD_TIME", "\"${getBuildTime(useLastCommitTime = true)}\"")
         }
