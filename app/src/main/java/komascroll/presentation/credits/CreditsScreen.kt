@@ -159,6 +159,7 @@ class CreditsScreen : Screen() {
                 KSR.strings.credits_realesrgan_ncnn,
                 "licenses/real-esrgan-ncnn-vulkan.txt",
             ),
+            ThirdPartyComponent("Comic Neue", KSR.strings.credits_comic_neue, "licenses/comic-neue-ofl.txt"),
         )
     }
 }

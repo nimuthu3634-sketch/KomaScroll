@@ -20,8 +20,10 @@ import eu.kanade.tachiyomi.ui.reader.model.ChapterTransition
 import eu.kanade.tachiyomi.ui.reader.model.ReaderPage
 import eu.kanade.tachiyomi.ui.reader.model.ViewerChapters
 import eu.kanade.tachiyomi.ui.reader.setting.ReaderPreferences
+import eu.kanade.tachiyomi.ui.reader.viewer.ReaderPageImageView
 import eu.kanade.tachiyomi.ui.reader.viewer.Viewer
 import eu.kanade.tachiyomi.ui.reader.viewer.ViewerNavigation.NavigationRegion
+import komascroll.translate.reader.TranslationLongPress
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import tachiyomi.core.common.util.system.logcat
@@ -147,6 +149,17 @@ class WebtoonViewer(
             }
         }
         recycler.longTapListener = f@{ event ->
+            // KS -->
+            recycler.findChildViewUnder(event.x, event.y)?.let { child ->
+                val item = adapter.items.getOrNull(recycler.getChildAdapterPosition(child)) as? ReaderPage
+                val pageView = child as? ReaderPageImageView
+                if (item != null && pageView != null &&
+                    TranslationLongPress.handle(activity, item, pageView, event.x - child.left, event.y - child.top)
+                ) {
+                    return@f true
+                }
+            }
+            // KS <--
             if (activity.viewModel.state.value.menuVisible || config.longTapEnabled) {
                 val child = recycler.findChildViewUnder(event.x, event.y)
                 if (child != null) {

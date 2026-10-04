@@ -19,7 +19,7 @@ import eu.kanade.tachiyomi.ui.reader.viewer.ReaderPageImageView
 import eu.kanade.tachiyomi.ui.reader.viewer.ReaderProgressIndicator
 import eu.kanade.tachiyomi.ui.webview.WebViewActivity
 import eu.kanade.tachiyomi.util.system.dpToPx
-import komascroll.upscale.reader.UpscaleBadge
+import komascroll.reader.PageEnhancementOverlay
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collectLatest
@@ -86,7 +86,7 @@ class WebtoonPageHolder(
     private var loadJob: Job? = null
 
     // KS -->
-    private val upscaleBadge = UpscaleBadge(frame)
+    private val enhancementOverlay = PageEnhancementOverlay(frame)
     // KS <--
 
     init {
@@ -103,7 +103,7 @@ class WebtoonPageHolder(
     fun bind(page: ReaderPage) {
         this.page = page
         // KS -->
-        upscaleBadge.reset()
+        enhancementOverlay.reset()
         // KS <--
         loadJob?.cancel()
         loadJob = scope.launch { loadPageAndProcessStatus() }
@@ -131,7 +131,7 @@ class WebtoonPageHolder(
 
         removeErrorLayout()
         // KS -->
-        upscaleBadge.reset()
+        enhancementOverlay.reset()
         // KS <--
         frame.recycle()
         progressIndicator.setProgress(0)
@@ -165,7 +165,7 @@ class WebtoonPageHolder(
                     // KS -->
                     Page.State.Ready -> {
                         setImage()
-                        upscaleBadge.track(page) { setImage() }
+                        enhancementOverlay.track(page) { setImage() }
                     }
                     // KS <--
                     is Page.State.Error -> setError(state.error)
@@ -208,7 +208,7 @@ class WebtoonPageHolder(
         progressIndicator.setProgress(0)
 
         // KS -->
-        val streamFn = page?.let { upscaleBadge.upscaledStream(it) } ?: page?.stream ?: return
+        val streamFn = page?.let { enhancementOverlay.streamFor(it) } ?: page?.stream ?: return
         // KS <--
 
         try {

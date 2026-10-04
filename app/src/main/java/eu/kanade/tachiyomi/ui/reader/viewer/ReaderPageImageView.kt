@@ -183,6 +183,21 @@ open class ReaderPageImageView @JvmOverloads constructor(
         it.isVisible = false
     }
 
+    // KS -->
+    /**
+     * Maps a point in this view's coordinates to a position on the displayed image, as fractions
+     * (0..1) of its width and height. Null when no still image is shown or the point is outside it.
+     */
+    fun imageFractionAt(x: Float, y: Float): PointF? {
+        val view = pageView as? SubsamplingScaleImageView ?: return null
+        if (!view.isReady || view.sWidth <= 0 || view.sHeight <= 0) return null
+        val source = view.viewToSourceCoord(x - view.left, y - view.top) ?: return null
+        val fx = source.x / view.sWidth
+        val fy = source.y / view.sHeight
+        return if (fx in 0f..1f && fy in 0f..1f) PointF(fx, fy) else null
+    }
+    // KS <--
+
     /**
      * Check if the image can be panned to the left
      */

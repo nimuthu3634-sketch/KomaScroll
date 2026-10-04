@@ -15,7 +15,7 @@ import eu.kanade.tachiyomi.ui.reader.viewer.ReaderPageImageView
 import eu.kanade.tachiyomi.ui.reader.viewer.ReaderProgressIndicator
 import eu.kanade.tachiyomi.ui.webview.WebViewActivity
 import eu.kanade.tachiyomi.widget.ViewPagerAdapter
-import komascroll.upscale.reader.UpscaleBadge
+import komascroll.reader.PageEnhancementOverlay
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -78,7 +78,7 @@ class PagerPageHolder(
     private var extraLoadJob: Job? = null
 
     // KS -->
-    private val upscaleBadge = UpscaleBadge(this)
+    private val enhancementOverlay = PageEnhancementOverlay(this)
     // KS <--
 
     init {
@@ -141,9 +141,9 @@ class PagerPageHolder(
                     // KS -->
                     Page.State.Ready -> {
                         setImage()
-                        // Upscaling is only shown for single pages, not merged double pages.
+                        // Lab page enhancements are only shown for single pages, not merged double pages.
                         if (pageIndex == 1 && extraPage == null) {
-                            upscaleBadge.track(page) { setImage() }
+                            enhancementOverlay.track(page) { setImage() }
                         }
                     }
                     // KS <--
@@ -191,8 +191,8 @@ class PagerPageHolder(
         }
 
         // KS -->
-        val upscaledStream = if (extraPage == null) upscaleBadge.upscaledStream(page) else null
-        val streamFn = upscaledStream ?: page.stream ?: return
+        val enhancedStream = if (extraPage == null) enhancementOverlay.streamFor(page) else null
+        val streamFn = enhancedStream ?: page.stream ?: return
         // KS <--
         val streamFn2 = extraPage?.stream
 
