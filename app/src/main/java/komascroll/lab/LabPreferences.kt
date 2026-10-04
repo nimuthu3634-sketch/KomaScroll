@@ -65,6 +65,17 @@ class LabPreferences(
     /** Reader-side toggle, shown in the reader settings sheet once the feature is enabled. */
     fun guidedInReader() = preferenceStore.getBoolean(key("guided_in_reader"), true)
 
+    // Library intelligence (Phase 4). Lightweight, so on by default.
+
+    /** Show "Next chapter likely: …" on series pages. */
+    fun releasePredictionEnabled() = preferenceStore.getBoolean(key("release_prediction_enabled"), true)
+
+    /** Fingerprint first pages while reading and offer to load chapters from other sources. */
+    fun sourceFailoverEnabled() = preferenceStore.getBoolean(key("source_failover_enabled"), true)
+
+    /** Count pages read per day (stored on this device only) for Reading Wrapped. */
+    fun readingStatsEnabled() = preferenceStore.getBoolean(key("reading_stats_enabled"), true)
+
     private fun key(name: String) = KEY_PREFIX + name
 
     private companion object {

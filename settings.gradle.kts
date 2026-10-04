@@ -62,6 +62,7 @@ include(":i18n-ks")
 include(":komascroll-upscale")
 include(":komascroll-translate")
 include(":komascroll-panels")
+include(":komascroll-insights")
 // KS <--
 include(":macrobenchmark")
 include(":presentation-core")

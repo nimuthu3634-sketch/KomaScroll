@@ -43,6 +43,7 @@ object SettingsLabScreen : SearchableSettings {
     override fun getPreferences(): List<Preference> {
         val preferences = remember { Injekt.get<LabPreferences>() }
         return listOf(
+            libraryGroup(preferences),
             translateGroup(preferences),
             getUpscaleGroup(preferences),
             Preference.PreferenceGroup(
