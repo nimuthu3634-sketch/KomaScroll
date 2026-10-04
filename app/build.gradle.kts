@@ -199,6 +199,7 @@ dependencies {
     implementation(projects.komascrollTranslate)
     implementation(projects.komascrollPanels)
     implementation(projects.komascrollInsights)
+    implementation(projects.komascrollImmersion)
     // KS <--
     implementation(projects.core.archive)
     implementation(projects.core.common)

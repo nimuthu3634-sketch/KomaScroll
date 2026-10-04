@@ -46,6 +46,11 @@
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
+    <!-- KS -> -->
+    <!-- Sound-effect haptics in the reader -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- KS <- -->
+
     <application
         android:name=".App"
         android:allowBackup="false"

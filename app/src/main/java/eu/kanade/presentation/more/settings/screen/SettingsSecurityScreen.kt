@@ -52,6 +52,7 @@ import eu.kanade.tachiyomi.ui.category.biometric.BiometricTimesScreen
 import eu.kanade.tachiyomi.util.system.AuthenticatorUtil.authenticate
 import eu.kanade.tachiyomi.util.system.AuthenticatorUtil.isAuthenticationSupported
 import eu.kanade.tachiyomi.util.system.telemetryIncluded
+import komascroll.immersion.lock.DecoySession
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableMap
 import mihon.core.archive.CbzCrypto
@@ -66,6 +67,11 @@ import uy.kohesive.injekt.api.get
 
 object SettingsSecurityScreen : SearchableSettings {
     private fun readResolve(): Any = SettingsSecurityScreen
+
+    // KS -->
+    /** Hidden in a decoy session so the lock settings do not give the decoy away. */
+    override fun isEnabled(): Boolean = !DecoySession.isActive
+    // KS <--
 
     @ReadOnlyComposable
     @Composable

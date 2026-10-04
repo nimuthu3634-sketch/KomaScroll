@@ -15,6 +15,7 @@ import eu.kanade.presentation.more.settings.Preference
 import eu.kanade.presentation.more.settings.screen.SearchableSettings
 import eu.kanade.tachiyomi.util.system.toast
 import komascroll.i18n.KSR
+import komascroll.immersion.lock.DecoySession
 import komascroll.lab.LabPreferences
 import komascroll.upscale.UpscaleCache
 import komascroll.upscale.engine.UpscaleEngine
@@ -35,6 +36,9 @@ object SettingsLabScreen : SearchableSettings {
     @Suppress("unused")
     private fun readResolve(): Any = SettingsLabScreen
 
+    /** Hidden in a decoy session: the Lab holds the app lock and decoy settings. */
+    override fun isEnabled(): Boolean = !DecoySession.isActive
+
     @ReadOnlyComposable
     @Composable
     override fun getTitleRes() = KSR.strings.pref_category_lab
@@ -43,7 +47,10 @@ object SettingsLabScreen : SearchableSettings {
     override fun getPreferences(): List<Preference> {
         val preferences = remember { Injekt.get<LabPreferences>() }
         return listOf(
+            appLockGroup(preferences),
             libraryGroup(preferences),
+            immersionGroup(preferences),
+            smartDownloadsGroup(preferences),
             translateGroup(preferences),
             getUpscaleGroup(preferences),
             Preference.PreferenceGroup(

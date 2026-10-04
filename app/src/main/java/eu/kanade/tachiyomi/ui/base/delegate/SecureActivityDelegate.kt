@@ -14,6 +14,7 @@ import eu.kanade.tachiyomi.ui.security.UnlockActivity
 import eu.kanade.tachiyomi.util.system.AuthenticatorUtil
 import eu.kanade.tachiyomi.util.system.AuthenticatorUtil.isAuthenticationSupported
 import eu.kanade.tachiyomi.util.view.setSecureScreen
+import komascroll.immersion.lock.AppLock
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -151,7 +152,11 @@ class SecureActivityDelegateImpl : SecureActivityDelegate, DefaultLifecycleObser
 
     private fun setAppLock() {
         if (!securityPreferences.useAuthenticator().get()) return
-        if (activity.isAuthenticationSupported()) {
+        // KS -->
+        // The KomaScroll PIN lock works without a device screen lock.
+        val pinLock = Injekt.get<AppLock>().isEnabled()
+        // KS <--
+        if (activity.isAuthenticationSupported() /* KS --> */ || pinLock /* KS <-- */) {
             if (!SecureActivityDelegate.requireUnlock) return
             activity.startActivity(Intent(activity, UnlockActivity::class.java))
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {

@@ -76,6 +76,45 @@ class LabPreferences(
     /** Count pages read per day (stored on this device only) for Reading Wrapped. */
     fun readingStatsEnabled() = preferenceStore.getBoolean(key("reading_stats_enabled"), true)
 
+    // Immersion and controls (Phase 5)
+
+    /** Vibrate to sound effects recognized on reader pages. Heavy (OCR on every page), so off by default. */
+    fun sfxHapticsEnabled() = preferenceStore.getBoolean(key("sfx_haptics_enabled"), false)
+
+    /** Reader-side toggle, shown in the reader settings sheet once the feature is enabled. */
+    fun sfxHapticsInReader() = preferenceStore.getBoolean(key("sfx_haptics_in_reader"), true)
+
+    /** Language the effects are written in, as a BCP-47 tag (selects the OCR script). */
+    fun sfxHapticsLanguage() = preferenceStore.getString(key("sfx_haptics_language"), "ja")
+
+    /** Vibration strength in percent. */
+    fun sfxHapticsIntensity() = preferenceStore.getInt(key("sfx_haptics_intensity"), 100)
+
+    /** "Clip panel" in the reader's page menu. Lightweight, so on by default. */
+    fun panelClipperEnabled() = preferenceStore.getBoolean(key("panel_clipper_enabled"), true)
+
+    /** Periodically download the next chapters of series being read. Uses data and storage, so off by default. */
+    fun smartDownloadsEnabled() = preferenceStore.getBoolean(key("smart_downloads_enabled"), false)
+
+    /** How many unread chapters to keep downloaded ahead of the reading position. */
+    fun smartDownloadsAhead() = preferenceStore.getInt(key("smart_downloads_ahead"), 3)
+
+    /** Only series read within this many days count as "being read". */
+    fun smartDownloadsActiveDays() = preferenceStore.getInt(key("smart_downloads_active_days"), 14)
+
+    fun smartDownloadsRequireCharging() = preferenceStore.getBoolean(key("smart_downloads_require_charging"), true)
+
+    fun smartDownloadsUnmeteredOnly() = preferenceStore.getBoolean(key("smart_downloads_unmetered_only"), true)
+
+    /** KomaScroll PIN lock. Only effective once a PIN is set (the PIN hash lives in encrypted storage). */
+    fun appLockEnabled() = preferenceStore.getBoolean(key("app_lock_enabled"), false)
+
+    /** Offer fingerprint / face unlock on the PIN screen. */
+    fun appLockBiometric() = preferenceStore.getBoolean(key("app_lock_biometric"), true)
+
+    /** Category shown as the whole library after unlocking with the decoy PIN; -1 shows an empty library. */
+    fun decoyCategoryId() = preferenceStore.getLong(key("decoy_category_id"), -1L)
+
     private fun key(name: String) = KEY_PREFIX + name
 
     private companion object {

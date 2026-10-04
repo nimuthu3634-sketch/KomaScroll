@@ -57,6 +57,7 @@ import exh.source.getMainSource
 import exh.source.isEhBasedManga
 import exh.util.defaultReaderType
 import exh.util.mangaType
+import komascroll.immersion.SfxHapticsManager
 import komascroll.library.LibraryInsightsRecorder
 import komascroll.translate.TranslationManager
 import komascroll.upscale.UpscaleManager
@@ -145,6 +146,7 @@ class ReaderViewModel @JvmOverloads constructor(
     private val upscaleManager: UpscaleManager = Injekt.get(),
     private val translationManager: TranslationManager = Injekt.get(),
     private val insightsRecorder: LibraryInsightsRecorder = Injekt.get(),
+    private val sfxHaptics: SfxHapticsManager = Injekt.get(),
     // KS <--
 ) : ViewModel() {
 
@@ -404,6 +406,7 @@ class ReaderViewModel @JvmOverloads constructor(
         upscaleManager.onReaderClosed()
         translationManager.onReaderClosed()
         insightsRecorder.onReaderClosed()
+        sfxHaptics.onReaderClosed()
         // KS <--
         val currentChapters = state.value.viewerChapters
         if (currentChapters != null) {
@@ -723,6 +726,7 @@ class ReaderViewModel @JvmOverloads constructor(
         upscaleManager.onPageSelected(page)
         translationManager.onPageSelected(page)
         insightsRecorder.onPageSelected(page)
+        sfxHaptics.onPageSelected(page)
         // KS <--
 
         eventChannel.trySend(Event.PageChanged)
@@ -1194,6 +1198,14 @@ class ReaderViewModel @JvmOverloads constructor(
         mutableState.update { it.copy(dialog = Dialog.PageActions(page, extraPage)) }
     }
 
+    // KS -->
+    /** Replaces the page actions sheet with the panel clipper for the same page. */
+    fun openPanelClipDialog() {
+        val page = (state.value.dialog as? Dialog.PageActions)?.page ?: return
+        mutableState.update { it.copy(dialog = Dialog.PanelClip(page)) }
+    }
+    // KS <--
+
     fun openSettingsDialog() {
         mutableState.update { it.copy(dialog = Dialog.Settings) }
     }
@@ -1545,6 +1557,10 @@ class ReaderViewModel @JvmOverloads constructor(
             val extraPage: ReaderPage? = null,
             // SY <--
         ) : Dialog
+
+        // KS -->
+        data class PanelClip(val page: ReaderPage) : Dialog
+        // KS <--
 
         // SY -->
         data object AutoScrollHelp : Dialog

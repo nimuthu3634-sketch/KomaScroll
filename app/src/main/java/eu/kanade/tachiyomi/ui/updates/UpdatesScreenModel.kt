@@ -20,6 +20,7 @@ import eu.kanade.tachiyomi.ui.reader.setting.ReaderPreferences
 import eu.kanade.tachiyomi.util.lang.toLocalDate
 import exh.source.EH_SOURCE_ID
 import exh.source.EXH_SOURCE_ID
+import komascroll.immersion.lock.DecoyLibrary
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.mutate
 import kotlinx.collections.immutable.persistentListOf
@@ -105,6 +106,9 @@ class UpdatesScreenModel(
                             bookmarked = it.filterBookmarked.toBooleanOrNull(),
                             hideExcludedScanlators = it.filterExcludedScanlators,
                         ).distinctUntilChanged()
+                            // KS -->
+                            .let { updates -> DecoyLibrary.byManga(updates) { update -> update.mangaId } }
+                        // KS <--
                     },
                 downloadCache.changes,
                 downloadManager.queueState,

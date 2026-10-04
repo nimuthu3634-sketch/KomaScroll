@@ -106,6 +106,7 @@ import exh.eh.EHentaiUpdateWorker
 import exh.log.DebugModeOverlay
 import exh.source.ExhPreferences
 import komascroll.core.KomaScrollBranding
+import komascroll.immersion.lock.DecoySession
 import komascroll.library.failover.SourceFailoverScreen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
@@ -385,6 +386,18 @@ class MainActivity : BaseActivity() {
                 }
 
                 HandleOnNewIntent(context = context, navigator = navigator)
+
+                // KS -->
+                // A decoy unlock lands on the (decoy) library, never on a screen left open before locking.
+                LaunchedEffect(navigator) {
+                    DecoySession.active.collect { decoy ->
+                        if (decoy) {
+                            navigator.popUntilRoot()
+                            HomeScreen.openTab(HomeScreen.Tab.Library())
+                        }
+                    }
+                }
+                // KS <--
 
                 // KMK -->
                 RearmJobs()

@@ -22,7 +22,8 @@ fun ReaderLabSettings() {
     val upscaleEnabled by preferences.upscaleEnabled().collectAsState()
     val translateEnabled by preferences.translateEnabled().collectAsState()
     val guidedEnabled by preferences.guidedEnabled().collectAsState()
-    if (!upscaleEnabled && !translateEnabled && !guidedEnabled) return
+    val sfxEnabled by preferences.sfxHapticsEnabled().collectAsState()
+    if (!upscaleEnabled && !translateEnabled && !guidedEnabled && !sfxEnabled) return
 
     HeadingItem(KSR.strings.pref_category_lab)
     if (guidedEnabled) {
@@ -41,6 +42,12 @@ fun ReaderLabSettings() {
         CheckboxItem(
             label = stringResource(KSR.strings.upscale_reader_toggle),
             pref = preferences.upscaleInReader(),
+        )
+    }
+    if (sfxEnabled) {
+        CheckboxItem(
+            label = stringResource(KSR.strings.sfx_reader_toggle),
+            pref = preferences.sfxHapticsInReader(),
         )
     }
 }

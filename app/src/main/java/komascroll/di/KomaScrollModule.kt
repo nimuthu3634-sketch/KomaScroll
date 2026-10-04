@@ -2,6 +2,8 @@ package komascroll.di
 
 import android.app.Application
 import komascroll.core.SecretStore
+import komascroll.immersion.SfxHapticsManager
+import komascroll.immersion.lock.AppLock
 import komascroll.lab.LabPreferences
 import komascroll.library.KomaScrollDatabase
 import komascroll.library.LibraryInsightsRecorder
@@ -42,5 +44,9 @@ class KomaScrollModule(private val app: Application) : InjektModule {
         addSingletonFactory { LibraryInsightsRecorder(get(), get()) }
         addSingletonFactory { SourceFailover(get(), get(), get(), get(), get(), get()) }
         addSingletonFactory { ReadingWrapped(get(), get(), get(), get()) }
+
+        // Immersion and controls: sound-effect haptics and the PIN app lock.
+        addSingletonFactory { SfxHapticsManager(app, get()) }
+        addSingletonFactory { AppLock(app, get(), get(), get()) }
     }
 }

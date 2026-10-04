@@ -57,6 +57,7 @@ import exh.source.nHentaiSourceIds
 import exh.util.cancellable
 import exh.util.isLewd
 import exh.util.nullIfBlank
+import komascroll.immersion.lock.DecoyLibrary
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.PersistentList
@@ -179,8 +180,10 @@ class LibraryScreenModel(
             combine(
                 combine(
                     state.map { it.searchQuery }.distinctUntilChanged().debounce(SEARCH_DEBOUNCE_MILLIS),
-                    getCategories.subscribe(),
-                    getFavoritesFlow(),
+                    // KS -->
+                    DecoyLibrary.categories(getCategories.subscribe()),
+                    DecoyLibrary.byManga(getFavoritesFlow()) { it.libraryManga.manga.id },
+                    // KS <--
                     ::Triple,
                 ),
                 combine(getTracksPerManga.subscribe(), getTrackingFiltersFlow(), ::Pair),
