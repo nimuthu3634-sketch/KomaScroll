@@ -29,7 +29,7 @@ class LibraryInsightsRecorder(
     fun onPageSelected(page: ReaderPage) {
         val target = (page as? InsertPage)?.parent ?: page
         val chapter = target.chapter.chapter
-        val mangaId = chapter.mangaId
+        val mangaId = chapter.manga_id ?: return
 
         if (preferences.readingStatsEnabled().get() && countedPages.add("${chapter.id}:${target.index}")) {
             scope.launch {
@@ -38,7 +38,7 @@ class LibraryInsightsRecorder(
             }
         }
 
-        val chapterNumber = chapter.chapterNumber
+        val chapterNumber = chapterKey(chapter.chapter_number.toDouble())
         if (preferences.sourceFailoverEnabled().get() && target.index < HASHED_PAGES && chapterNumber >= 0) {
             scope.launch {
                 try {
@@ -64,5 +64,11 @@ class LibraryInsightsRecorder(
         /** How many leading pages of each chapter are fingerprinted (credit pages vary by group). */
         const val HASHED_PAGES = 3
         private const val READY_TIMEOUT_MS = 60_000L
+
+        /**
+         * Chapter numbers reach us as Float (reader, sources) or Double (database); rounding makes
+         * them comparable, e.g. 10.1f and 10.1 both become 10.1.
+         */
+        fun chapterKey(number: Double): Double = Math.round(number * 1000) / 1000.0
     }
 }

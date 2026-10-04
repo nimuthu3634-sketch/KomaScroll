@@ -115,10 +115,13 @@ class SourceFailover(
     /** Adds the matched series to the database (not to the library) and finds the chapter. */
     suspend fun open(match: Match, chapterNumber: Double?): Opened {
         val local = networkToLocalManga(match.manga.toDomainManga(match.source.id))
-        val chapters = match.source.getChapterList(local.toSManga())
+        val chapters = fetchChapters(match.source, local.toSManga())
         syncChaptersWithSource.await(chapters, local, match.source)
         val chapterId = chapterNumber?.let { number ->
-            getChaptersByMangaId.await(local.id).firstOrNull { it.chapterNumber == number }?.id
+            val wanted = LibraryInsightsRecorder.chapterKey(number)
+            getChaptersByMangaId.await(local.id)
+                .firstOrNull { LibraryInsightsRecorder.chapterKey(it.chapterNumber) == wanted }
+                ?.id
         }
         return Opened(local.id, chapterId)
     }
@@ -136,12 +139,15 @@ class SourceFailover(
             .maxByOrNull { it.second }
             ?: return null
 
-        val chapters = source.getChapterList(candidate)
+        val chapters = fetchChapters(source, candidate)
         val numbered = chapters.associateBy { chapter ->
-            ChapterRecognition.parseChapterNumber(candidate.title, chapter.name, chapter.chapter_number.toDouble())
+            LibraryInsightsRecorder.chapterKey(
+                ChapterRecognition.parseChapterNumber(candidate.title, chapter.name, chapter.chapter_number.toDouble()),
+            )
         }
-        val hasChapter = chapterNumber?.let { it in numbered.keys }
-        val verification = verify(source, numbered, fingerprints, chapterNumber)
+        val wanted = chapterNumber?.let(LibraryInsightsRecorder::chapterKey)
+        val hasChapter = wanted?.let { it in numbered.keys }
+        val verification = verify(source, numbered, fingerprints, wanted)
         Match(source, candidate, score, verification, hasChapter)
     } catch (e: Exception) {
         logcat(LogPriority.WARN, e) { "Failover search failed in ${source.name}" }
@@ -184,6 +190,9 @@ class SourceFailover(
             }.getOrNull()
         }
     }
+
+    private suspend fun fetchChapters(source: HttpSource, manga: SManga): List<SChapter> =
+        source.getMangaUpdate(manga, emptyList(), fetchDetails = false, fetchChapters = true).chapters
 
     private fun sorted(matches: List<Match>): List<Match> = matches.sortedWith(
         compareBy<Match> { it.verification.ordinal }
