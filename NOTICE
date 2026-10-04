@@ -1,0 +1,34 @@
+KomaScroll
+Copyright 2026 The KomaScroll contributors
+
+This product is a modified version of Komikku (https://github.com/komikku-app/komikku),
+licensed under the Apache License, Version 2.0.
+
+Komikku is itself derived from:
+  - Mihon (https://github.com/mihonapp/mihon)
+    Copyright 2015-2024 Javier Tomás, Copyright 2024 Mihon Open Source Project
+  - TachiyomiSY (https://github.com/jobobby04/TachiyomiSY)
+  - Tachiyomi (https://github.com/tachiyomiorg/tachiyomi)
+all licensed under the Apache License, Version 2.0.
+
+All original copyright notices in the source files are retained.
+Modifications made by KomaScroll to upstream files are marked with
+"// KS -->" ... "// KS <--" comments (or "<!-- KS -> -->" ... "<!-- KS <- -->" in XML).
+New KomaScroll code lives in the "komascroll" packages and the "i18n-ks" module.
+
+"Komikku", "Mihon" and "Tachiyomi" are names of their respective projects.
+KomaScroll is not affiliated with or endorsed by them.
+
+Bundled native components (KomaScroll Lab, AI upscaling):
+  - NCNN (https://github.com/Tencent/ncnn), Copyright (C) 2017 Tencent,
+    BSD 3-Clause License, including glslang (Khronos Group, BSD/MIT/Apache 2.0).
+    Downloaded as the official Android Vulkan prebuilt at build time.
+  - realesr-animevideov3 model from Real-ESRGAN (https://github.com/xinntao/Real-ESRGAN),
+    Copyright (c) 2021 Xintao Wang, BSD 3-Clause License.
+  - Tiling approach adapted from Real-ESRGAN-ncnn-vulkan
+    (https://github.com/xinntao/Real-ESRGAN-ncnn-vulkan), Copyright (c) 2021 Xintao Wang, MIT License.
+Their full license texts are in komascroll-upscale/src/main/assets/licenses/ and are shown in the app
+under Settings > About > Credits.
+
+Other third-party libraries and their licenses are listed in the app under
+Settings > About > Open source licenses.

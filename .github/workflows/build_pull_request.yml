@@ -1,0 +1,72 @@
+# KomaScroll: PR build check (adapted from Komikku's workflow).
+# Runs the same gates a contributor runs locally and uploads the debug APK for testing.
+name: PR build check
+on:
+  # Every push to a work branch is built, so branches get a debug APK even without a PR.
+  push:
+    branches-ignore:
+      - main
+    paths:
+      - '**'
+      - '!**.md'
+  # Pull requests from forks (same-repo branches are already covered by the push trigger).
+  pull_request:
+    paths:
+      - '**'
+      - '!**.md'
+  # Dispatch or Manual triggers
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build app
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
+    runs-on: 'ubuntu-24.04'
+
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+
+      - name: Validate Gradle Wrapper
+        uses: gradle/actions/wrapper-validation@3f131e8634966bd73d06cc69884922b02e6faf92 # v6.2.0
+
+      - name: Set up JDK
+        uses: actions/setup-java@1bcf9fb12cf4aa7d266a90ae39939e61372fe520 # v5.4.0
+        with:
+          java-version-file: .github/.java-version
+          distribution: temurin
+
+      - name: Set up gradle
+        uses: gradle/actions/setup-gradle@3f131e8634966bd73d06cc69884922b02e6faf92 # v6
+
+      - name: Check code format
+        run: ./gradlew spotlessCheck
+
+      - name: Build debug APK
+        run: ./gradlew assembleDebug
+
+      - name: Run unit tests
+        id: unit_tests
+        run: ./gradlew testDebugUnitTest
+
+      - name: Upload test report
+        if: failure() && steps.unit_tests.outcome == 'failure'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: test-report-${{ github.sha }}
+          path: '**/build/reports/tests/testDebugUnitTest'
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: KomaScroll-debug-${{ github.sha }}
+          path: app/build/outputs/apk/debug/*.apk

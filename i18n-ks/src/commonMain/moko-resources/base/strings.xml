@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- KomaScroll Lab -->
+    <string name="pref_category_lab">KomaScroll Lab</string>
+    <string name="pref_lab_summary">Experimental reader features</string>
+    <string name="lab_empty">No experimental features yet. New KomaScroll features will appear here, each with its own on/off switch.</string>
+
+    <!-- Credits -->
+    <string name="credits">Credits</string>
+    <string name="credits_summary">The open-source projects KomaScroll is built on</string>
+    <string name="credits_intro">KomaScroll is a fork of Komikku. It would not exist without the work of the projects below and all of their contributors.</string>
+    <string name="credits_komikku">The app KomaScroll is forked from</string>
+    <string name="credits_mihon">The manga reader Komikku is based on</string>
+    <string name="credits_tachiyomisy">Feature fork whose additions are included in Komikku</string>
+    <string name="credits_tachiyomi">The original open-source manga reader</string>
+    <string name="credits_license_title">License</string>
+    <string name="credits_license_body">KomaScroll, Komikku, Mihon, TachiyomiSY and Tachiyomi are distributed under the Apache License, Version 2.0. All original copyright notices are kept in the source code. KomaScroll is an independent project and is not affiliated with or endorsed by any of them.</string>
+    <string name="credits_source_code">KomaScroll source code</string>
+    <string name="credits_third_party">Third-party components</string>
+    <string name="credits_ncnn">Neural network inference engine used for AI upscaling (BSD 3-Clause)</string>
+    <string name="credits_glslang">GPU shader compiler bundled with NCNN (BSD/MIT/Apache 2.0)</string>
+    <string name="credits_realesrgan">realesr-animevideov3 upscaling model by Xintao Wang et al. (BSD 3-Clause)</string>
+    <string name="credits_realesrgan_ncnn">Tiling approach for running Real-ESRGAN on NCNN (MIT)</string>
+    <!-- AI upscaling -->
+    <string name="upscale_group">AI upscaling</string>
+    <string name="upscale_enable">AI upscaling</string>
+    <string name="upscale_enable_summary">Sharpen low-resolution pages with Real-ESRGAN while reading (current page plus the next 2). Uses the GPU and extra battery.</string>
+    <string name="upscale_device">Device support</string>
+    <string name="upscale_device_unknown">Turn on AI upscaling to check this device</string>
+    <string name="upscale_device_gpu">GPU: %1$s (Vulkan)</string>
+    <string name="upscale_device_no_vulkan">No Vulkan GPU found. Upscaling needs the CPU fallback below, which is very slow.</string>
+    <string name="upscale_device_gpu_crashed">The GPU driver crashed during setup, so the GPU was switched off. Tap to try the GPU again.</string>
+    <string name="upscale_device_unavailable">Not supported on this device</string>
+    <string name="upscale_scale">Upscale factor</string>
+    <string name="upscale_scale_2x">2×</string>
+    <string name="upscale_scale_4x">4× (larger files, more memory)</string>
+    <string name="upscale_max_width">Only upscale pages narrower than</string>
+    <string name="upscale_width_px">%1$d px</string>
+    <string name="upscale_width_any">Any width</string>
+    <string name="upscale_only_charging">Only while charging</string>
+    <string name="upscale_allow_cpu">Allow CPU fallback</string>
+    <string name="upscale_allow_cpu_summary">Used only when no Vulkan GPU is available. Very slow and battery-hungry.</string>
+    <string name="upscale_cache_limit">Upscale cache size</string>
+    <string name="upscale_cache_clear">Clear upscale cache</string>
+    <string name="upscale_cache_used">Used: %1$s</string>
+    <string name="upscale_cache_cleared">%1$d upscaled pages deleted</string>
+    <string name="upscale_reader_toggle">AI upscaling (current + next 2 pages)</string>
+    <string name="upscale_badge_done">AI ×%1$d</string>
+    <string name="upscale_badge_running">AI ×%1$d · %2$d%%</string>
+    <string name="upscale_badge_failed">AI upscaling failed</string>
+    <string name="upscale_badge_no_backend">AI: no GPU (see KomaScroll Lab)</string>
+    <string name="upscale_badge_description">AI upscaling status. Tap to cancel while upscaling.</string>
+</resources>

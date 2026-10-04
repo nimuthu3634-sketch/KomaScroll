@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KomaScroll placeholder icon (generated). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:fillType="evenOdd"
+        android:pathData="M38,28 H70 A4,4 0 0 1 74,32 V76 A4,4 0 0 1 70,80 H38 A4,4 0 0 1 34,76 V32 A4,4 0 0 1 38,28 Z M39,32 H69 A1,1 0 0 1 70,33 V49 A1,1 0 0 1 69,50 H39 A1,1 0 0 1 38,49 V33 A1,1 0 0 1 39,32 Z M39,53 H51 A1,1 0 0 1 52,54 V75 A1,1 0 0 1 51,76 H39 A1,1 0 0 1 38,75 V54 A1,1 0 0 1 39,53 Z M56,53 H69 A1,1 0 0 1 70,54 V63 A1,1 0 0 1 69,64 H56 A1,1 0 0 1 55,63 V54 A1,1 0 0 1 56,53 Z M56,67 H69 A1,1 0 0 1 70,68 V75 A1,1 0 0 1 69,76 H56 A1,1 0 0 1 55,75 V68 A1,1 0 0 1 56,67 Z" />
+</vector>
