@@ -93,7 +93,8 @@ class TranslationManager(
     }
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    private val engine by lazy { PageTranslationEngine(context) }
+    private val engineDelegate = lazy { PageTranslationEngine(context) }
+    private val engine by engineDelegate
 
     /** OCR, translation and rendering are memory-heavy: one page at a time. */
     private val engineMutex = Mutex()
@@ -188,6 +189,13 @@ class TranslationManager(
         cancelAll()
         userCancelled.clear()
         states.clear()
+        trimMemory()
+    }
+
+    /** Closes the OCR models (tens of MB of native memory); they are reopened on next use. */
+    fun trimMemory() {
+        if (!engineDelegate.isInitialized()) return
+        scope.launch { engineMutex.withLock { engine.close() } }
     }
 
     /** Size of the translation cache in bytes. */

@@ -2,12 +2,188 @@
 
 KomaScroll is an Android manga reader built on top of [Komikku](https://github.com/komikku-app/komikku),
 which is itself based on [Mihon](https://github.com/mihonapp/mihon) and [TachiyomiSY](https://github.com/jobobby04/TachiyomiSY).
-It adds experimental features under **Settings → KomaScroll Lab**.
+Everything Komikku does, KomaScroll does too; its own additions live under **Settings → KomaScroll Lab**,
+each with its own on/off switch.
 
-KomaScroll is source-agnostic: it ships with no content sources or extension repositories.
+KomaScroll is source-agnostic: it ships with no content sources or extension repositories, and does
+not recommend any. You add the extension repositories you want yourself.
 
-Licensed under the Apache License 2.0 — see [LICENSE](LICENSE) and [NOTICE](NOTICE).
-KomaScroll is not affiliated with the Komikku, Mihon or Tachiyomi projects.
+*Requires Android 8.0 or higher.* Licensed under the Apache License 2.0 — see [LICENSE](LICENSE) and
+[NOTICE](NOTICE). KomaScroll is not affiliated with the Komikku, Mihon or Tachiyomi projects.
+
+## KomaScroll Lab features
+
+Heavy features are off by default; turn them on in Settings → KomaScroll Lab.
+
+| Feature | What it does | Default |
+|---|---|---|
+| AI upscaling | Real-ESRGAN (NCNN, Vulkan GPU) upscales low-resolution pages 2× or 4× while you read, with a disk cache you can size and clear | Off |
+| Live raw translation | On-device OCR and translation (ML Kit) of raw Japanese, Chinese, Korean or English pages, typeset into the bubbles; optional DeepL with your own key | Off |
+| Guided panel view | Detects panels and steps through them one at a time in the paged readers | Off |
+| Release prediction | "Next chapter likely: Friday" on series pages, from past upload dates | On |
+| Source failover | Finds a series in your other sources, checks it is the same one by comparing page fingerprints, and offers this when a chapter fails to load | On |
+| Reading Wrapped | Yearly reading stats with a shareable card | On |
+| Sound-effect haptics | Vibrates to sound effects on the page (ドン, BOOM, ドキドキ…) | Off |
+| Panel clipper | Share one panel or area of a page, with spoilers blurred | On |
+| Smart downloads | Keeps the next few unread chapters of series you are reading downloaded, while charging and on Wi-Fi | Off |
+| PIN app lock and decoy library | A PIN pad with fingerprint/face unlock; a second PIN opens a decoy library | Off |
+
+API keys you enter (DeepL) are stored encrypted with the Android Keystore; lock PINs are only stored
+as salted hashes. Lab features only go online for what you turn on: downloading ML Kit models through
+Google Play services, DeepL if you add a key, and your own sources.
+
+## Download
+
+Signed releases go on the [Releases](https://github.com/nimuthu3634-sketch/KomaScroll/releases)
+page. Test builds of every branch are attached to its run on the
+[Actions](https://github.com/nimuthu3634-sketch/KomaScroll/actions) tab (open a run → **Artifacts**).
+Most current phones need the `arm64-v8a` APK; the `universal` one works everywhere.
+
+## Building on Windows
+
+### What you need
+
+- **Windows 10 or 11** with about 15 GB of free disk space and 8 GB of RAM or more.
+- **JDK 21**, for example [Eclipse Temurin 21](https://adoptium.net/temurin/releases/?version=21).
+  Tick "Set JAVA_HOME" in the installer, then check in a new PowerShell window: `java -version`.
+- **Android SDK**: the easiest way is [Android Studio](https://developer.android.com/studio). In
+  *Settings → Languages & Frameworks → Android SDK*, install **Android SDK Platform 36**, and under
+  *SDK Tools* also **NDK (Side by side)** and **CMake** (the AI upscaler is native code).
+- **Git for Windows**.
+
+### Build a debug APK
+
+Open PowerShell. Clone into a short path, because native builds can hit Windows' path length limit:
+
+```powershell
+git config --global core.longpaths true
+git clone https://github.com/nimuthu3634-sketch/KomaScroll.git C:\dev\KomaScroll
+cd C:\dev\KomaScroll
+```
+
+Tell Gradle where the SDK is (skip this if you opened the project in Android Studio once, which
+writes the same file):
+
+```powershell
+"sdk.dir=$($env:LOCALAPPDATA -replace '\\','/')/Android/Sdk" | Out-File -Encoding ascii local.properties
+```
+
+Then build:
+
+```powershell
+.\gradlew.bat assembleDebug
+```
+
+The first build downloads about 1 GB of dependencies (plus the NCNN library) and takes a while; later
+builds are much faster. The APKs end up in `app\build\outputs\apk\debug\`. The debug app has its
+own package name (`com.chama.komascroll.dev`), so it installs next to a release build.
+
+To install on a phone with USB debugging enabled:
+
+```powershell
+adb install -r app\build\outputs\apk\debug\app-arm64-v8a-debug.apk
+```
+
+Before sending changes, run the same checks as CI:
+
+```powershell
+.\gradlew.bat spotlessApply
+.\gradlew.bat spotlessCheck
+.\gradlew.bat testDebugUnitTest
+```
+
+If Gradle runs out of memory, run `.\gradlew.bat --stop` and try again.
+
+## Signing a release
+
+Release APKs are shrunk and optimized by R8 and must be signed with **your own** key. The key file
+and its passwords must never be committed: `keystore.properties`, `*.jks` and `*.keystore` are
+git-ignored.
+
+**1. Create a keystore** (once). `keytool` comes with the JDK:
+
+```powershell
+mkdir $env:USERPROFILE\keystores
+keytool -genkeypair -v -keystore $env:USERPROFILE\keystores\komascroll-release.jks `
+  -alias komascroll -keyalg RSA -keysize 4096 -validity 10000
+```
+
+It asks for a password and your name/organization. **Back up the `.jks` file and the password**
+somewhere safe (a password manager and an offline copy): Android only installs updates signed
+with the same key, so losing it means users have to uninstall to get new versions.
+
+**2. Point the build at it.** Copy `keystore.properties.example` to `keystore.properties` in the
+project folder and fill in the path (with forward slashes), alias and passwords.
+
+**3. Build:**
+
+```powershell
+.\gradlew.bat assembleRelease
+```
+
+The signed APKs are in `app\build\outputs\apk\release\`. To check the signature:
+
+```powershell
+& "$env:LOCALAPPDATA\Android\Sdk\build-tools\36.0.0\apksigner.bat" verify --print-certs `
+  app\build\outputs\apk\release\app-arm64-v8a-release.apk
+```
+
+(Use whichever build-tools version you have installed.)
+
+### Releasing from GitHub
+
+The **Release Builder** workflow builds signed APKs on GitHub when you push a tag such as `v1.0.0`,
+and attaches them to a *draft* release for you to review and publish. It needs four repository
+secrets (*Settings → Secrets and variables → Actions → New repository secret*):
+
+| Secret | Value |
+|---|---|
+| `KOMASCROLL_KEYSTORE_BASE64` | The keystore file as Base64 (see below) |
+| `KOMASCROLL_KEYSTORE_PASSWORD` | The keystore password |
+| `KOMASCROLL_KEY_ALIAS` | `komascroll` (or the alias you chose) |
+| `KOMASCROLL_KEY_PASSWORD` | The key password (the same as the keystore password unless you set another) |
+
+To copy the keystore as Base64 to the clipboard:
+
+```powershell
+[Convert]::ToBase64String([IO.File]::ReadAllBytes("$env:USERPROFILE\keystores\komascroll-release.jks")) | Set-Clipboard
+```
+
+Then tag and push:
+
+```powershell
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+Without the secrets the workflow still builds, but the APKs are unsigned and no release is created.
+
+## Performance
+
+- Heavy work (OCR, translation, upscaling, panel detection, fingerprints, page hashing) runs off the
+  main thread, one page at a time, and can be cancelled. Results go to disk caches with limits you
+  set; only small results are kept in memory.
+- When the app goes to the background or Android is short on memory, KomaScroll releases its ML
+  models and the upscaler's GPU memory; they are reloaded when next needed. Leaving the reader does
+  the same.
+- To measure it yourself, use Android Studio's profiler on a release-like build (the `benchmark`
+  build type is profileable), or check memory from PowerShell while reading:
+  `adb shell dumpsys meminfo com.chama.komascroll`.
+
+## Credits
+
+KomaScroll stands on the work of:
+
+- [Komikku](https://github.com/komikku-app/komikku), the app this is built on
+- [Mihon](https://github.com/mihonapp/mihon), [TachiyomiSY](https://github.com/jobobby04/TachiyomiSY)
+  and [Tachiyomi](https://github.com/tachiyomiorg/tachiyomi), which Komikku is built on
+- [NCNN](https://github.com/Tencent/ncnn) (BSD 3-Clause) and
+  [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN) (BSD 3-Clause) for AI upscaling
+- [Google ML Kit](https://developers.google.com/ml-kit) for on-device text recognition and translation
+- [Comic Neue](https://github.com/crozynski/comicneue) (SIL Open Font License) for translated text
+
+All original copyright notices are kept; see [NOTICE](NOTICE) for details. The app lists them under
+Settings → About → Credits, along with every library's license.
 
 > The rest of this file is Komikku's original README, kept for reference. Its download links and
 > community channels belong to Komikku, not KomaScroll.

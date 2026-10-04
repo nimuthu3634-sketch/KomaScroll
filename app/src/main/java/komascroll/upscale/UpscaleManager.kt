@@ -145,6 +145,11 @@ class UpscaleManager(
         cancelAll()
         userCancelled.clear()
         states.clear()
+        trimMemory()
+    }
+
+    /** Frees the model's GPU memory once current work finishes; the next upscale reloads it. */
+    fun trimMemory() {
         scope.launch(engineDispatcher) { engine.release() }
     }
 

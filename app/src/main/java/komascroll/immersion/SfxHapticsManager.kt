@@ -106,6 +106,12 @@ class SfxHapticsManager(
         synchronized(played) { played.clear() }
         vibrator?.cancel()
         unavailable = false
+        trimMemory()
+    }
+
+    /** Closes the OCR model and drops cached results; both come back on next use. */
+    fun trimMemory() {
+        results.evictAll()
         scope.launch { ocrMutex.withLock { recognizer.close() } }
     }
 

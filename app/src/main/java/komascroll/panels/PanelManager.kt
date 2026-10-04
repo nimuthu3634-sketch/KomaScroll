@@ -36,6 +36,11 @@ class PanelManager(
     private val disk = LruFileCache(File(context.cacheDir, "komascroll_panels")) { DISK_LIMIT_BYTES }
     private val mutex = Mutex()
 
+    /** Drops the in-memory layouts; the disk cache keeps them. */
+    fun trimMemory() {
+        memory.evictAll()
+    }
+
     /** The panel layout of [page] in reading order; suspends until the page is downloaded. */
     suspend fun layoutFor(page: ReaderPage, rightToLeft: Boolean): PanelLayout {
         val target = (page as? InsertPage)?.parent ?: page
