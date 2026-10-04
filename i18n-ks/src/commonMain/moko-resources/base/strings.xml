@@ -90,4 +90,10 @@
     <string name="translate_bubble_translation">Translation</string>
     <string name="translate_bubble_copy">Copy original</string>
     <string name="credits_comic_neue">Comic-style font for typeset translations (SIL Open Font License 1.1)</string>
+    <!-- Guided panel view -->
+    <string name="guided_group">Guided panel view</string>
+    <string name="guided_enable">Guided panel view</string>
+    <string name="guided_enable_summary">In the paged reading modes, taps, swipes and volume keys move from panel to panel with an animated zoom, in the series\' reading direction. Pages whose panels cannot be detected reliably are shown in full. Not used with double-page or split-page layouts.</string>
+    <string name="guided_reader_toggle">Guided panel view (paged modes)</string>
+    <string name="guided_indicator">%1$d / %2$d</string>
 </resources>

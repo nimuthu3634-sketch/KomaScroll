@@ -21,6 +21,7 @@ import eu.kanade.tachiyomi.ui.reader.model.ReaderPage
 import eu.kanade.tachiyomi.ui.reader.model.ViewerChapters
 import eu.kanade.tachiyomi.ui.reader.viewer.Viewer
 import eu.kanade.tachiyomi.ui.reader.viewer.ViewerNavigation.NavigationRegion
+import komascroll.panels.reader.GuidedPanelController
 import komascroll.translate.reader.TranslationLongPress
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
@@ -53,6 +54,11 @@ abstract class PagerViewer(
      * Configuration used by the pager, like allow taps, scale mode on images, page transitions...
      */
     val config = PagerConfig(this, scope)
+
+    // KS -->
+    /** Guided panel view (KomaScroll Lab): steps through detected panels with animated zoom. */
+    val guidedPanels = GuidedPanelController(this)
+    // KS <--
 
     /**
      * Adapter of the pager.
@@ -118,6 +124,9 @@ abstract class PagerViewer(
         pager.id = R.id.reader_pager
         pager.adapter = adapter
         pager.addOnPageChangeListener(pagerListener)
+        // KS -->
+        guidedPanels.attach()
+        // KS <--
         pager.tapListener = { event ->
             val viewPosition = IntArray(2)
             pager.getLocationOnScreen(viewPosition)
@@ -181,6 +190,9 @@ abstract class PagerViewer(
 
     override fun destroy() {
         super.destroy()
+        // KS -->
+        guidedPanels.destroy()
+        // KS <--
         scope.cancel()
     }
 
@@ -203,6 +215,15 @@ abstract class PagerViewer(
         pager.children
             .filterIsInstance<PagerPageHolder>()
             .firstOrNull { it.item.first == page || it.item.second == page }
+
+    // KS -->
+    fun pageHolderFor(page: ReaderPage): PagerPageHolder? = getPageHolder(page)
+
+    /** Moves one adapter position up or down, honouring guided panel view. */
+    fun moveByItem(towardsHigherIndex: Boolean) {
+        if (towardsHigherIndex) moveRight() else moveLeft()
+    }
+    // KS <--
 
     /**
      * Called when a new page (either a [ReaderPage] or [ChapterTransition]) is marked as active
@@ -264,6 +285,9 @@ abstract class PagerViewer(
 
         // Notify holder of page change
         getPageHolder(page)?.onPageSelected(forward)
+        // KS -->
+        guidedPanels.onPageSelected(page, forward)
+        // KS <--
 
         // Skip preload on inserts it causes unwanted page jumping
         if (page is InsertPage) {
@@ -376,6 +400,9 @@ abstract class PagerViewer(
      * Moves to the page at the right.
      */
     protected open fun moveRight() {
+        // KS -->
+        if (guidedPanels.onMove(towardsHigherIndex = true)) return
+        // KS <--
         if (pager.currentItem != adapter.count - 1) {
             val holder = (currentPage as? ReaderPage)?.let(::getPageHolder)
             if (holder != null && config.navigateToPan && holder.canPanRight()) {
@@ -390,6 +417,9 @@ abstract class PagerViewer(
      * Moves to the page at the left.
      */
     protected open fun moveLeft() {
+        // KS -->
+        if (guidedPanels.onMove(towardsHigherIndex = false)) return
+        // KS <--
         if (pager.currentItem != 0) {
             val holder = (currentPage as? ReaderPage)?.let(::getPageHolder)
             if (holder != null && config.navigateToPan && holder.canPanLeft()) {
@@ -406,6 +436,12 @@ abstract class PagerViewer(
     protected open fun moveUp() {
         // KMK -->
         val holder = (currentPage as? ReaderPage)?.let(::getPageHolder)
+        // KS -->
+        if (guidedPanels.consumesPanning()) {
+            moveToPrevious()
+            return
+        }
+        // KS <--
         if (holder != null && holder.canPanUp()) {
             holder.panUp()
         } else {
@@ -420,6 +456,12 @@ abstract class PagerViewer(
     protected open fun moveDown() {
         // KMK -->
         val holder = (currentPage as? ReaderPage)?.let(::getPageHolder)
+        // KS -->
+        if (guidedPanels.consumesPanning()) {
+            moveToNext()
+            return
+        }
+        // KS <--
         if (holder != null && holder.canPanDown()) {
             holder.panDown()
         } else {

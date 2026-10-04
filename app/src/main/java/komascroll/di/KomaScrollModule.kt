@@ -3,6 +3,7 @@ package komascroll.di
 import android.app.Application
 import komascroll.core.SecretStore
 import komascroll.lab.LabPreferences
+import komascroll.panels.PanelManager
 import komascroll.translate.TranslationManager
 import komascroll.upscale.UpscaleCache
 import komascroll.upscale.UpscaleManager
@@ -28,5 +29,8 @@ class KomaScrollModule(private val app: Application) : InjektModule {
         // Live translation: OCR and translation models are only touched once the feature is used.
         addSingletonFactory { SecretStore(app) }
         addSingletonFactory { TranslationManager(app, get(), get(), get(), get(), get()) }
+
+        // Guided panel view: classical panel detection, cached per page.
+        addSingletonFactory { PanelManager(app, get()) }
     }
 }

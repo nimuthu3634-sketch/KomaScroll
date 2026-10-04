@@ -21,9 +21,16 @@ fun ReaderLabSettings() {
     val preferences = remember { Injekt.get<LabPreferences>() }
     val upscaleEnabled by preferences.upscaleEnabled().collectAsState()
     val translateEnabled by preferences.translateEnabled().collectAsState()
-    if (!upscaleEnabled && !translateEnabled) return
+    val guidedEnabled by preferences.guidedEnabled().collectAsState()
+    if (!upscaleEnabled && !translateEnabled && !guidedEnabled) return
 
     HeadingItem(KSR.strings.pref_category_lab)
+    if (guidedEnabled) {
+        CheckboxItem(
+            label = stringResource(KSR.strings.guided_reader_toggle),
+            pref = preferences.guidedInReader(),
+        )
+    }
     if (translateEnabled) {
         CheckboxItem(
             label = stringResource(KSR.strings.translate_reader_toggle),

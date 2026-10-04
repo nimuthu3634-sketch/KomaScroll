@@ -2,6 +2,7 @@ package eu.kanade.tachiyomi.ui.reader.viewer.pager
 
 import android.content.Context
 import android.os.Parcelable
+import android.view.GestureDetector
 import android.view.HapticFeedbackConstants
 import android.view.KeyEvent
 import android.view.MotionEvent
@@ -62,6 +63,22 @@ open class Pager(
      */
     private val gestureDetector = GestureDetectorWithLongTap(context, gestureListener)
 
+    // KS -->
+    /**
+     * Set while guided panel view is active: page dragging is disabled and flings are passed here
+     * (velocity in px/s) to step through panels instead.
+     */
+    var panelFlingListener: ((velocityX: Float, velocityY: Float) -> Boolean)? = null
+
+    private val panelFlingDetector = GestureDetector(
+        context,
+        object : GestureDetector.SimpleOnGestureListener() {
+            override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean =
+                panelFlingListener?.invoke(velocityX, velocityY) ?: false
+        },
+    )
+    // KS <--
+
     /**
      * Whether the gesture detector is currently enabled.
      */
@@ -71,6 +88,9 @@ open class Pager(
      * Dispatches a touch event.
      */
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        // KS -->
+        if (panelFlingListener != null) panelFlingDetector.onTouchEvent(ev)
+        // KS <--
         val handled = super.dispatchTouchEvent(ev)
         if (isGestureDetectorEnabled) {
             gestureDetector.onTouchEvent(ev)
@@ -83,6 +103,9 @@ open class Pager(
      * views manipulate [requestDisallowInterceptTouchEvent].
      */
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
+        // KS -->
+        if (panelFlingListener != null) return false
+        // KS <--
         return try {
             super.onInterceptTouchEvent(ev)
         } catch (e: IllegalArgumentException) {
@@ -95,6 +118,9 @@ open class Pager(
      * [requestDisallowInterceptTouchEvent].
      */
     override fun onTouchEvent(ev: MotionEvent): Boolean {
+        // KS -->
+        if (panelFlingListener != null) return false
+        // KS <--
         return try {
             super.onTouchEvent(ev)
         } catch (e: NullPointerException) {
