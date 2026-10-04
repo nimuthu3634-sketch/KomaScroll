@@ -29,12 +29,12 @@ object WrappedShareCard {
         val file = File(directory, "wrapped-${summary.year}.png")
         file.outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
         bitmap.recycle()
-        val share = file.getUriCompat(context).toShareIntent(
+        // toShareIntent already wraps the intent in the system share sheet.
+        return file.getUriCompat(context).toShareIntent(
             context,
             type = "image/png",
             message = context.stringResource(KSR.strings.wrapped_share_message, summary.year),
         )
-        return Intent.createChooser(share, context.stringResource(KSR.strings.wrapped_share))
     }
 
     private fun render(context: Context, summary: ReadingWrapped.Summary): Bitmap {

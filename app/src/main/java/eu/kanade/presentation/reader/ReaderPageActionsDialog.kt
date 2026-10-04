@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ContentCopy
+import androidx.compose.material.icons.outlined.Crop
 import androidx.compose.material.icons.outlined.Photo
 import androidx.compose.material.icons.outlined.Save
 import androidx.compose.material.icons.outlined.Share
@@ -21,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import eu.kanade.presentation.components.AdaptiveSheet
+import komascroll.i18n.KSR
 import tachiyomi.i18n.MR
 import tachiyomi.i18n.kmk.KMR
 import tachiyomi.i18n.sy.SYMR
@@ -39,6 +41,9 @@ fun ReaderPageActionsDialog(
     onSaveCombined: () -> Unit,
     hasExtraPage: Boolean,
     // SY <--
+    // KS -->
+    onClipPanel: (() -> Unit)? = null,
+    // KS <--
 ) {
     var showSetCoverDialog by remember { mutableStateOf(false) }
     // SY -->
@@ -122,6 +127,20 @@ fun ReaderPageActionsDialog(
                     },
                 )
             }
+            // KS -->
+            if (onClipPanel != null) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small),
+                ) {
+                    ActionButton(
+                        modifier = Modifier.weight(1f),
+                        title = stringResource(KSR.strings.clip_action),
+                        icon = Icons.Outlined.Crop,
+                        onClick = onClipPanel,
+                    )
+                }
+            }
+            // KS <--
             if (hasExtraPage) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small),

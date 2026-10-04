@@ -10,6 +10,7 @@ import eu.kanade.domain.manga.interactor.UpdateManga
 import eu.kanade.domain.track.interactor.AddTracks
 import eu.kanade.presentation.history.HistoryUiModel
 import eu.kanade.tachiyomi.util.lang.toLocalDate
+import komascroll.immersion.lock.DecoyLibrary
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -100,6 +101,9 @@ class HistoryScreenModel(
                         nonLibraryEntries = pref.filterNonLibraryManga.toBooleanOrNull(),
                         // KMK <--
                     )
+                        // KS -->
+                        .let { history -> DecoyLibrary.byManga(history) { it.mangaId } }
+                        // KS <--
                         .distinctUntilChanged()
                         .catch { error ->
                             logcat(LogPriority.ERROR, error)

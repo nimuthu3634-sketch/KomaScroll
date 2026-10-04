@@ -102,6 +102,7 @@ import eu.kanade.tachiyomi.ui.reader.setting.ReadingMode
 import eu.kanade.tachiyomi.ui.reader.viewer.ReaderProgressIndicator
 import eu.kanade.tachiyomi.ui.reader.viewer.pager.PagerConfig
 import eu.kanade.tachiyomi.ui.reader.viewer.pager.PagerViewer
+import eu.kanade.tachiyomi.ui.reader.viewer.pager.R2LPagerViewer
 import eu.kanade.tachiyomi.ui.reader.viewer.pager.VerticalPagerViewer
 import eu.kanade.tachiyomi.ui.reader.viewer.webtoon.WebtoonViewer
 import eu.kanade.tachiyomi.ui.webview.WebViewActivity
@@ -113,6 +114,8 @@ import eu.kanade.tachiyomi.util.view.setComposeContent
 import exh.source.isEhBasedSource
 import exh.util.defaultReaderType
 import exh.util.mangaType
+import komascroll.immersion.clipper.PanelClipDialog
+import komascroll.lab.LabPreferences
 import komascroll.library.failover.ReaderFailoverPrompt
 import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toImmutableList
@@ -176,6 +179,10 @@ class ReaderActivity : BaseActivity() {
     // AM (CONNECTIONS) -->
     private val connectionsPreferences: ConnectionsPreferences = Injekt.get()
     // <-- AM (CONNECTIONS)
+
+    // KS -->
+    private val labPreferences: LabPreferences = Injekt.get()
+    // KS <--
 
     lateinit var binding: ReaderActivityBinding
 
@@ -446,8 +453,26 @@ class ReaderActivity : BaseActivity() {
                             }
                         },
                         hasExtraPage = (state.dialog as? ReaderViewModel.Dialog.PageActions)?.extraPage != null,
+                        // KS -->
+                        onClipPanel = if (labPreferences.panelClipperEnabled().get()) {
+                            viewModel::openPanelClipDialog
+                        } else {
+                            null
+                        },
+                        // KS <--
                     )
                 }
+
+                // KS -->
+                is ReaderViewModel.Dialog.PanelClip -> {
+                    PanelClipDialog(
+                        page = (state.dialog as ReaderViewModel.Dialog.PanelClip).page,
+                        mangaTitle = state.manga?.title,
+                        rightToLeft = state.viewer is R2LPagerViewer,
+                        onDismissRequest = onDismissRequest,
+                    )
+                }
+                // KS <--
 
                 is ReaderViewModel.Dialog.ChapterList -> {
                     var chapters by remember {

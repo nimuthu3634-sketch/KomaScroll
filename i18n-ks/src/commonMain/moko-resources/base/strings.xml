@@ -143,4 +143,73 @@
     <string name="wrapped_empty">Nothing read in %1$d yet.</string>
     <string name="wrapped_note_pages_since">Chapters, time and streaks come from your reading history. Pages are counted since %1$s.</string>
     <string name="wrapped_note_no_pages">Chapters, time and streaks come from your reading history. Pages are counted while Reading stats is on.</string>
+
+    <!-- Immersion and controls (Phase 5) -->
+    <string name="immersion_group">Immersion</string>
+    <string name="sfx_enable">Sound-effect haptics</string>
+    <string name="sfx_enable_summary">Vibrate to sound effects on the page, like a thud for ドン or a heartbeat for ドキドキ. Recognizes text on every page on-device, which uses more battery; downloads the text recognition model on first use</string>
+    <string name="sfx_no_vibrator">This device cannot vibrate</string>
+    <string name="sfx_language">Sound-effect language</string>
+    <string name="sfx_intensity">Vibration strength</string>
+    <string name="sfx_try">Try it</string>
+    <string name="sfx_try_summary">Plays a heartbeat at the selected strength</string>
+    <string name="sfx_reader_toggle">Sound-effect haptics</string>
+
+    <string name="clip_enable">Panel clipper</string>
+    <string name="clip_enable_summary">Adds \"Clip panel\" to the page menu (long-press a page): share one panel or area, with spoilers blurred</string>
+    <string name="clip_action">Clip panel</string>
+    <string name="clip_title">Clip panel</string>
+    <string name="clip_mode_select">Select area</string>
+    <string name="clip_mode_blur">Blur spoilers</string>
+    <string name="clip_hint_select">Tap a panel, or drag to select any area. Tap outside the panels to use the whole page.</string>
+    <string name="clip_hint_blur">Drag over anything to blur it. Tap a blurred area to remove it.</string>
+    <string name="clip_undo_blur">Undo last blur</string>
+    <string name="clip_share">Share clip</string>
+    <string name="clip_add_caption">Add the series and chapter to the message</string>
+    <string name="clip_mark_spoiler">Mark the file as a spoiler (apps such as Discord hide it until tapped)</string>
+    <string name="clip_failed">Could not create the clip</string>
+
+    <string name="smart_downloads_group">Smart downloads</string>
+    <string name="smart_downloads_enable">Smart downloads</string>
+    <string name="smart_downloads_enable_summary">Every few hours, downloads the next unread chapters of series you are reading, so they are ready offline</string>
+    <string name="smart_downloads_ahead">Chapters to keep ready</string>
+    <string name="smart_downloads_ahead_value">%1$d unread</string>
+    <string name="smart_downloads_active">Series read within</string>
+    <string name="smart_downloads_days_value">%1$d days</string>
+    <string name="smart_downloads_charging">Only while charging</string>
+    <string name="smart_downloads_unmetered">Only on Wi-Fi or other unmetered networks</string>
+    <string name="smart_downloads_run_now">Run now</string>
+    <string name="smart_downloads_run_now_summary">Checks your series once right away, on any network</string>
+    <string name="smart_downloads_started">Smart downloads started</string>
+
+    <string name="lock_group">App lock</string>
+    <string name="lock_enable">Lock with PIN</string>
+    <string name="lock_enable_summary">Replaces the system unlock prompt with a KomaScroll PIN. When the app locks is set in Settings → Security</string>
+    <string name="lock_enabled">PIN lock is on</string>
+    <string name="lock_set_pin">Set PIN</string>
+    <string name="lock_change_pin">Change PIN</string>
+    <string name="lock_disable">Turn off PIN lock</string>
+    <string name="lock_new_pin">New PIN</string>
+    <string name="lock_confirm_pin">Confirm PIN</string>
+    <string name="lock_current_pin">Current PIN</string>
+    <string name="lock_pin_invalid">A PIN is %1$d to %2$d digits</string>
+    <string name="lock_pin_mismatch">The PINs do not match</string>
+    <string name="lock_wrong_pin">Wrong PIN</string>
+    <string name="lock_locked_out">Too many attempts. Try again in %1$d s</string>
+    <string name="lock_biometric">Fingerprint or face unlock</string>
+    <string name="lock_biometric_summary">Biometrics always open your real library; turn this off if you rely on the decoy PIN</string>
+    <string name="lock_decoy_pin">Decoy PIN</string>
+    <string name="lock_decoy_pin_summary">A second PIN that opens a decoy library instead of yours</string>
+    <string name="lock_decoy_pin_set">Set. Tap to remove</string>
+    <string name="lock_decoy_set">Set decoy PIN</string>
+    <string name="lock_decoy_set_message">Unlocking with this PIN shows only the decoy library category. History, updates, the KomaScroll Lab and security settings are hidden until you unlock with your real PIN.</string>
+    <string name="lock_decoy_same">The decoy PIN must differ from your PIN</string>
+    <string name="lock_decoy_remove">Remove decoy PIN?</string>
+    <string name="lock_decoy_remove_message">Only your real PIN will unlock the app.</string>
+    <string name="lock_decoy_category">Decoy library</string>
+    <string name="lock_decoy_empty">Empty library</string>
+    <string name="lock_delete_digit">Delete digit</string>
+    <string name="lock_unlock">Unlock</string>
+    <string name="lock_use_biometric">Use fingerprint or face</string>
+    <string name="lock_use_pin">Use PIN</string>
 </resources>
