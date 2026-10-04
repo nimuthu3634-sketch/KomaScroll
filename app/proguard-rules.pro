@@ -3,6 +3,11 @@
 -keep,allowoptimization class eu.kanade.**
 -keep,allowoptimization class tachiyomi.**
 -keep,allowoptimization class mihon.**
+# KS -->
+# KomaScroll code: kept like the upstream packages above (Voyager screens, WorkManager workers and
+# Injekt registrations are looked up by class).
+-keep,allowoptimization class komascroll.**
+# KS <--
 
 # Keep common dependencies used in extensions
 -keep,allowoptimization class androidx.preference.** { public protected *; }
@@ -92,6 +97,17 @@
 -keepclasseswithmembers class exh.** {
     kotlinx.serialization.KSerializer serializer(...);
 }
+
+# KS -->
+# KomaScroll serializable models (cached panel layouts, translated pages, DeepL responses)
+-keep,includedescriptorclasses class komascroll.**$$serializer { *; }
+-keepclassmembers class komascroll.** {
+    *** Companion;
+}
+-keepclasseswithmembers class komascroll.** {
+    kotlinx.serialization.KSerializer serializer(...);
+}
+# KS <--
 
 # Filter serializer
 -keep,includedescriptorclasses class xyz.nulldev.ts.api.http.serializer.**$$serializer { *; }
@@ -315,3 +331,8 @@
 -dontwarn org.ietf.jgss.Oid
 -dontwarn com.google.re2j.Matcher
 -dontwarn com.google.re2j.Pattern
+
+# KS -->
+# ML Kit and Play services ship their own consumer rules. The NCNN upscaler's JNI entry points and
+# native callback are kept by komascroll-upscale's consumer-rules.pro.
+# KS <--

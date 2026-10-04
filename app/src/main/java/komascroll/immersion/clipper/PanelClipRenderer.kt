@@ -7,12 +7,16 @@ import tachiyomi.decoder.ImageDecoder
 import java.io.ByteArrayInputStream
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.sqrt
 
 /** Image work for the panel clipper: decoding a page, blurring spoilers and cropping the clip. */
 object PanelClipRenderer {
 
     /** Pages are decoded at most this many pixels so large webtoon strips stay within memory. */
     private const val MAX_PIXELS = 8_000_000L
+
+    /** Previews are drawn at most this large: plenty for a phone screen. */
+    private const val MAX_DISPLAY_PIXELS = 2_500_000L
 
     /** Blurred regions are shrunk until their shorter side is about this many pixels. */
     private const val BLUR_RESOLUTION = 10
@@ -38,6 +42,23 @@ object PanelClipRenderer {
             decoded
         }
     }
+
+    /** [source] scaled down to at most [MAX_DISPLAY_PIXELS] for on-screen previews (or itself if smaller). */
+    fun forDisplay(source: Bitmap): Bitmap {
+        val pixels = source.width.toLong() * source.height
+        if (pixels <= MAX_DISPLAY_PIXELS) return source
+        val factor = sqrt(MAX_DISPLAY_PIXELS.toDouble() / pixels)
+        val width = max(1, (source.width * factor).toInt())
+        val height = max(1, (source.height * factor).toInt())
+        return Bitmap.createScaledBitmap(source, width, height, true)
+    }
+
+    fun scale(rect: Rect, factor: Float) = Rect(
+        (rect.left * factor).toInt(),
+        (rect.top * factor).toInt(),
+        (rect.right * factor).toInt(),
+        (rect.bottom * factor).toInt(),
+    )
 
     /** A copy of [source] with every rectangle in [blurs] blurred beyond recognition. */
     fun withBlurs(source: Bitmap, blurs: List<Rect>): Bitmap {

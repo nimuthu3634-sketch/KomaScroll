@@ -109,11 +109,18 @@ fun PanelClipDialog(
     var markSpoiler by remember { mutableStateOf(false) }
     var sharing by remember { mutableStateOf(false) }
 
-    // Live preview with the blurs applied; recomputed off the main thread when they change.
+    // Live preview with the blurs applied, drawn from a screen-sized copy so each change does not
+    // duplicate the full-resolution page; sharing still renders from the full page.
+    val display by produceState<Bitmap?>(null, source) {
+        value = source?.let { withContext(Dispatchers.Default) { PanelClipRenderer.forDisplay(it) } }
+    }
     var preview by remember { mutableStateOf<Bitmap?>(null) }
-    LaunchedEffect(source, blurs.toList()) {
-        val bitmap = source ?: return@LaunchedEffect
-        preview = withContext(Dispatchers.Default) { PanelClipRenderer.withBlurs(bitmap, blurs.toList()) }
+    LaunchedEffect(display, blurs.toList()) {
+        val full = source ?: return@LaunchedEffect
+        val screen = display ?: return@LaunchedEffect
+        val scale = screen.width / full.width.toFloat()
+        val scaledBlurs = blurs.map { PanelClipRenderer.scale(it, scale) }
+        preview = withContext(Dispatchers.Default) { PanelClipRenderer.withBlurs(screen, scaledBlurs) }
     }
 
     Dialog(
@@ -201,7 +208,7 @@ fun PanelClipDialog(
                     } else {
                         ClipCanvas(
                             source = bitmap,
-                            preview = preview ?: bitmap,
+                            preview = preview ?: display ?: bitmap,
                             panels = panels,
                             mode = mode,
                             crop = crop,

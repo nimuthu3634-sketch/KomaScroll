@@ -91,9 +91,9 @@ class AppLock(
         }
     }
 
-    private suspend fun matches(key: String, pin: String): Boolean {
-        val stored = secrets.get(key) ?: return false
-        return withContext(Dispatchers.Default) { PinHasher.verify(pin, stored) }
+    private suspend fun matches(key: String, pin: String): Boolean = withContext(Dispatchers.Default) {
+        val stored = secrets.get(key) ?: return@withContext false
+        PinHasher.verify(pin, stored)
     }
 
     private fun resetAttempts() {

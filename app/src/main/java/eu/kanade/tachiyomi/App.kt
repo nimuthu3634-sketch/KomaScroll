@@ -76,6 +76,7 @@ import exh.log.EHLogLevel
 import exh.log.EnhancedFilePrinter
 import exh.log.XLogLogcatLogger
 import exh.log.xLogD
+import komascroll.core.KomaScrollMemoryTrimmer
 import komascroll.di.KomaScrollModule
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
@@ -149,6 +150,7 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
         // SY <--
         // KS -->
         Injekt.importModule(KomaScrollModule(this))
+        registerComponentCallbacks(KomaScrollMemoryTrimmer())
         // KS <--
 
         setupExhLogging() // EXH logging
