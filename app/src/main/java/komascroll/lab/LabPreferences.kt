@@ -57,6 +57,14 @@ class LabPreferences(
     /** Disk cache limit for translated pages, in MB. */
     fun translateCacheSizeMb() = preferenceStore.getInt(key("translate_cache_size_mb"), 200)
 
+    // Guided panel view (Phase 3)
+
+    /** Master switch: detect panels and step through them in the paged readers. Off by default. */
+    fun guidedEnabled() = preferenceStore.getBoolean(key("guided_enabled"), false)
+
+    /** Reader-side toggle, shown in the reader settings sheet once the feature is enabled. */
+    fun guidedInReader() = preferenceStore.getBoolean(key("guided_in_reader"), true)
+
     private fun key(name: String) = KEY_PREFIX + name
 
     private companion object {

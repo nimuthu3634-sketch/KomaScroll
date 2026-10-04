@@ -447,6 +447,9 @@ class PagerPageHolder(
     override fun onImageLoaded() {
         super.onImageLoaded()
         progressIndicator?.hide()
+        // KS -->
+        viewer.guidedPanels.onImageLoaded(this)
+        // KS <--
     }
 
     /**

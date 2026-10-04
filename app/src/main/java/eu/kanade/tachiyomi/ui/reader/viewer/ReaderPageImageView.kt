@@ -196,6 +196,36 @@ open class ReaderPageImageView @JvmOverloads constructor(
         val fy = source.y / view.sHeight
         return if (fx in 0f..1f && fy in 0f..1f) PointF(fx, fy) else null
     }
+
+    /** Whether a still image is decoded and laid out, so it can be zoomed programmatically. */
+    val isImageReady: Boolean
+        get() = (pageView as? SubsamplingScaleImageView)?.isReady == true
+
+    /**
+     * Zooms so the region (fractions 0..1 of the image) fills the view, centred on it.
+     * Used by guided panel view. Returns false if the image is not ready.
+     */
+    fun zoomToImageRegion(left: Float, top: Float, right: Float, bottom: Float, animate: Boolean): Boolean {
+        val view = pageView as? SubsamplingScaleImageView ?: return false
+        if (!view.isReady || view.width == 0 || view.height == 0) return false
+        val regionWidth = (right - left) * view.sWidth
+        val regionHeight = (bottom - top) * view.sHeight
+        if (regionWidth <= 0f || regionHeight <= 0f) return false
+
+        val scale = minOf(view.width / regionWidth, view.height / regionHeight).coerceAtLeast(view.minScale)
+        if (scale > view.maxScale) view.maxScale = scale
+        val center = PointF((left + right) / 2 * view.sWidth, (top + bottom) / 2 * view.sHeight)
+        if (animate) {
+            (view.animateScaleAndCenter(scale, center) ?: return false)
+                .withDuration(GUIDED_ZOOM_DURATION)
+                .withEasing(EASE_IN_OUT_QUAD)
+                .withInterruptible(false)
+                .start()
+        } else {
+            view.setScaleAndCenter(scale, center)
+        }
+        return true
+    }
     // KS <--
 
     /**
@@ -498,3 +528,7 @@ open class ReaderPageImageView @JvmOverloads constructor(
 }
 
 private const val MAX_ZOOM_SCALE = 5F
+
+// KS -->
+private const val GUIDED_ZOOM_DURATION = 350L
+// KS <--

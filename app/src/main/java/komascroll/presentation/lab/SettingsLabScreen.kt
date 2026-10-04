@@ -45,6 +45,16 @@ object SettingsLabScreen : SearchableSettings {
         return listOf(
             translateGroup(preferences),
             getUpscaleGroup(preferences),
+            Preference.PreferenceGroup(
+                title = stringResource(KSR.strings.guided_group),
+                preferenceItems = persistentListOf(
+                    Preference.PreferenceItem.SwitchPreference(
+                        preference = preferences.guidedEnabled(),
+                        title = stringResource(KSR.strings.guided_enable),
+                        subtitle = stringResource(KSR.strings.guided_enable_summary),
+                    ),
+                ),
+            ),
         )
     }
 
