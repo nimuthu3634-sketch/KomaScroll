@@ -7,24 +7,33 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.LockOpen
 import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import eu.kanade.tachiyomi.util.system.toast
 import komascroll.i18n.KSR
+import komascroll.immersion.lock.DecoySession
 import komascroll.insights.ChapterGaps
 import komascroll.insights.ReleasePredictor
 import komascroll.lab.LabPreferences
 import komascroll.library.failover.SourceFailoverScreen
+import komascroll.library.privacy.PrivateSeries
 import tachiyomi.domain.chapter.model.Chapter
 import tachiyomi.domain.manga.model.Manga
 import tachiyomi.presentation.core.i18n.stringResource
@@ -58,9 +67,14 @@ fun LibraryInsightsRow(manga: Manga, chapters: List<Chapter>) {
         }
     }
     val showFailover = failoverEnabled && !manga.isLocal()
-    if (prediction == null && !showFailover) return
+    val privateEnabled by preferences.privateSeriesEnabled().collectAsState()
+    val decoy by DecoySession.active.collectAsState()
+    val showPrivate = privateEnabled && !decoy
+    if (prediction == null && !showFailover && !showPrivate) return
 
     val navigator = LocalNavigator.currentOrThrow
+    val context = LocalContext.current
+    val isPrivate by remember(manga.id) { PrivateSeries.isMarked(manga.id) }.collectAsState(false)
     val firstMissing = remember(chapters) { ChapterGaps.firstMissing(chapters.map { it.chapterNumber }) }
 
     Row(
@@ -88,6 +102,22 @@ fun LibraryInsightsRow(manga: Manga, chapters: List<Chapter>) {
         if (showFailover) {
             TextButton(onClick = { navigator.push(SourceFailoverScreen(manga.id, chapterNumber = firstMissing)) }) {
                 Text(stringResource(KSR.strings.failover_button))
+            }
+        }
+        if (showPrivate) {
+            IconButton(
+                onClick = {
+                    PrivateSeries.setMarked(manga.id, !isPrivate)
+                    context.toast(if (isPrivate) KSR.strings.private_unmarked else KSR.strings.private_marked)
+                },
+            ) {
+                Icon(
+                    imageVector = if (isPrivate) Icons.Outlined.Lock else Icons.Outlined.LockOpen,
+                    contentDescription = stringResource(
+                        if (isPrivate) KSR.strings.private_unmark else KSR.strings.private_mark,
+                    ),
+                    tint = if (isPrivate) MaterialTheme.colorScheme.primary else LocalContentColor.current,
+                )
             }
         }
     }

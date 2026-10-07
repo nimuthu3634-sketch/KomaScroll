@@ -182,7 +182,18 @@
     <string name="smart_downloads_run_now_summary">Checks your series once right away, on any network</string>
     <string name="smart_downloads_started">Smart downloads started</string>
 
-    <string name="lock_group">App lock</string>
+    <string name="lock_group">Privacy and app lock</string>
+    <string name="private_enable">Private series</string>
+    <string name="private_enable_summary">Mark series private with the lock button on their series page, then hide or show all of them with the \"Hide private series\" switch in the More tab</string>
+    <string name="private_disable_message">Turning this off shows all private series again.</string>
+    <string name="private_hide">Hide private series</string>
+    <string name="private_hide_summary">%1$d private series. When on, they are hidden from the library, History, Updates and Reading Wrapped</string>
+    <string name="private_hide_summary_none">No private series yet. Mark one with the lock button on its series page</string>
+    <string name="private_show_title">Show private series</string>
+    <string name="private_mark">Make this series private</string>
+    <string name="private_unmark">Make this series public</string>
+    <string name="private_marked">Marked private: hidden while \"Hide private series\" in the More tab is on</string>
+    <string name="private_unmarked">No longer private</string>
     <string name="lock_enable">Lock with PIN</string>
     <string name="lock_enable_summary">Replaces the system unlock prompt with a KomaScroll PIN. When the app locks is set in Settings → Security</string>
     <string name="lock_enabled">PIN lock is on</string>

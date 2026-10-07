@@ -115,6 +115,15 @@ class LabPreferences(
     /** Category shown as the whole library after unlocking with the decoy PIN; -1 shows an empty library. */
     fun decoyCategoryId() = preferenceStore.getLong(key("decoy_category_id"), -1L)
 
+    /** Private series feature: the lock button on series pages and the More tab switch. */
+    fun privateSeriesEnabled() = preferenceStore.getBoolean(key("private_series_enabled"), true)
+
+    /** IDs of series marked private on their series page. */
+    fun privateSeriesIds() = preferenceStore.getStringSet(key("private_series_ids"), emptySet())
+
+    /** Hide private series from the library, History, Updates and Reading Wrapped (the More tab switch). */
+    fun hidePrivateSeries() = preferenceStore.getBoolean(key("hide_private_series"), true)
+
     private fun key(name: String) = KEY_PREFIX + name
 
     private companion object {
