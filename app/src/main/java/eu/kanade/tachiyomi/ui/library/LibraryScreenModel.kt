@@ -58,6 +58,7 @@ import exh.util.cancellable
 import exh.util.isLewd
 import exh.util.nullIfBlank
 import komascroll.immersion.lock.DecoyLibrary
+import komascroll.library.privacy.PrivateSeries
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.PersistentList
@@ -182,7 +183,9 @@ class LibraryScreenModel(
                     state.map { it.searchQuery }.distinctUntilChanged().debounce(SEARCH_DEBOUNCE_MILLIS),
                     // KS -->
                     DecoyLibrary.categories(getCategories.subscribe()),
-                    DecoyLibrary.byManga(getFavoritesFlow()) { it.libraryManga.manga.id },
+                    PrivateSeries.exclude(DecoyLibrary.byManga(getFavoritesFlow()) { it.libraryManga.manga.id }) {
+                        it.libraryManga.manga.id
+                    },
                     // KS <--
                     ::Triple,
                 ),

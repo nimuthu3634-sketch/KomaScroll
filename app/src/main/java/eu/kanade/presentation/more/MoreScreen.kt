@@ -44,6 +44,7 @@ import eu.kanade.tachiyomi.ui.more.DownloadQueueState
 import eu.kanade.tachiyomi.util.system.openInBrowser
 import exh.pref.DelegateSourcePreferences
 import exh.source.ExhPreferences
+import komascroll.library.privacy.PrivateSeriesSwitch
 import tachiyomi.core.common.Constants
 import tachiyomi.i18n.MR
 import tachiyomi.i18n.kmk.KMR
@@ -118,6 +119,9 @@ fun MoreScreen(
                     onCheckedChanged = onIncognitoModeChange,
                 )
             }
+            // KS -->
+            item { PrivateSeriesSwitch() }
+            // KS <--
 
             item { HorizontalDivider() }
 

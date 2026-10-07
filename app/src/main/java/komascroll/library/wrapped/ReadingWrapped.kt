@@ -2,6 +2,7 @@ package komascroll.library.wrapped
 
 import komascroll.insights.ReadingStreaks
 import komascroll.library.KomaScrollDatabase
+import komascroll.library.privacy.PrivateSeries
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import tachiyomi.domain.history.repository.HistoryRepository
@@ -70,7 +71,9 @@ class ReadingWrapped(
         pageRows.forEach { if (it.pages > 0) activeDays += it.day }
         val pagesBySeries = pageRows.groupBy { it.mangaId }.mapValues { (_, rows) -> rows.sumOf { it.pages } }
 
-        val titles = mangas.associate { it.id to it.title }
+        // Hidden private series still count towards the totals but are never named.
+        val hidden = PrivateSeries.currentlyHidden()
+        val titles = mangas.filter { it.id !in hidden }.associate { it.id to it.title }
         val genres = mangas.associate { it.id to it.genre.orEmpty() }
         // Rank series by chapters read, using pages as a tie-breaker.
         val topSeries = chaptersBySeries.keys.union(pagesBySeries.keys)
@@ -81,7 +84,7 @@ class ReadingWrapped(
             .take(TOP_COUNT)
 
         val genreWeights = mutableMapOf<String, Int>()
-        chaptersBySeries.forEach { (id, chapters) ->
+        chaptersBySeries.filterKeys { it !in hidden }.forEach { (id, chapters) ->
             genres[id].orEmpty().map { it.trim() }.filter { it.isNotEmpty() }.forEach { genre ->
                 genreWeights[genre] = (genreWeights[genre] ?: 0) + chapters
             }

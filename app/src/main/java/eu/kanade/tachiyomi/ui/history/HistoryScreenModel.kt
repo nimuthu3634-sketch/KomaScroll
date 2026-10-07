@@ -11,6 +11,8 @@ import eu.kanade.domain.track.interactor.AddTracks
 import eu.kanade.presentation.history.HistoryUiModel
 import eu.kanade.tachiyomi.util.lang.toLocalDate
 import komascroll.immersion.lock.DecoyLibrary
+import komascroll.immersion.lock.DecoySession
+import komascroll.library.privacy.PrivateSeries
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -103,6 +105,7 @@ class HistoryScreenModel(
                     )
                         // KS -->
                         .let { history -> DecoyLibrary.byManga(history) { it.mangaId } }
+                        .let { history -> PrivateSeries.exclude(history) { it.mangaId } }
                         // KS <--
                         .distinctUntilChanged()
                         .catch { error ->
@@ -144,6 +147,14 @@ class HistoryScreenModel(
     }
 
     suspend fun getNextChapter(): Chapter? {
+        // KS -->
+        // With private series hidden (or in a decoy session) the latest history entry may be one the
+        // list does not show, so resume from the most recent visible one instead.
+        if (DecoySession.isActive || PrivateSeries.currentlyHidden().isNotEmpty()) {
+            val last = state.value.list.firstOrNull() ?: return null
+            return withIOContext { getNextChapters.await(last.mangaId, last.chapterId, onlyUnread = false).firstOrNull() }
+        }
+        // KS <--
         return withIOContext { getNextChapters.await(onlyUnread = false).firstOrNull() }
     }
 
